@@ -1,9 +1,9 @@
 <script>
-    let folders = [
-        { name: "General TODO" },
-        { name: "Groceries" },
-        { name: "Delivery app" },
-    ];
+    export let data;
+    console.log(data);
+    
+    let folders = data.foldersData;
+    let notes = data.notesData;
 
     let note;
 
@@ -40,16 +40,92 @@
     }
 
     let loading = false;
+
+    let noteInput = "";
+    const createNote = () => {
+        const newNote = { content: noteInput, folderID: 1 };
+        fetch("../api/note", {
+            method: "POST",
+            body: JSON.stringify(newNote),
+            headers: {"Content-Type": "application/json"}
+        })
+        .then(res => res.json())
+        .then(json => {
+            console.log(json);
+            newNote.noteID = json.noteID;
+            notes = [...notes, newNote];
+        })
+    }
+
+    let folderInput = "";
+    const createFolder = () => {
+        const newFolder = { name: folderInput };
+        fetch("../api/folder", {
+            method: "POST",
+            body: JSON.stringify(newFolder),
+            headers: {"Content-Type": "application/json"}
+        })
+        .then(res => res.json())
+        .then(json => {
+            console.log(json);
+            newFolder.folderID = json.folderID;
+            folders = [...folders, newFolder];
+        })
+    }
+
+    const deleteNote = (noteID) => {
+        fetch("../api/note", {
+            method: "DELETE",
+            body: JSON.stringify({ noteID }),
+            headers: {"Content-Type": "application/json"}
+        })
+        .then(res => res.json())
+        .then(json => {
+            console.log(json);
+            notes = notes.filter(note => note.noteID != noteID);
+        })
+    }
+
+    const deleteFolder = (folderID) => {
+        fetch("../api/folder", {
+            method: "DELETE",
+            body: JSON.stringify({ folderID }),
+            headers: {"Content-Type": "application/json"}
+        })
+        .then(res => res.json())
+        .then(json => {
+            console.log(json);
+            folders = folders.filter(folder => folder.folderID != folderID);
+        })
+    }
 </script>
 
 <main>
     <h3>Note categorizer</h3>
+    <p>You can click on a folder or note to delete</p>
     <div class="folders">
-        {#each folders as { name }}
-            <input type="text" bind:value={name}>
+        <p>Folders</p>
+        {#each folders as { name, folderID }}
+            <button on:click={() => deleteFolder(folderID)}>{name}</button>
+        {/each}
+    </div>
+    <div class="notes">
+        <p>Notes</p>
+        {#each notes as { content, noteID }}
+            <button on:click={() => deleteNote(noteID)}>{content}</button>
         {/each}
     </div>
     <div>
+        <p>Adding a note</p>
+        <input bind:value={noteInput} type="text" placeholder="Create a new note...">
+        <button on:click={createNote}>Send</button>
+    </div>
+    <div>
+        <p>Adding a folder</p>
+        <input bind:value={folderInput} type="text" placeholder="Create a new folder...">
+        <button on:click={createFolder}>Send</button>
+    </div>
+    <!-- <div>
         <input bind:value={note} type="text" placeholder="Type a new note...">
         <button on:click={getFolder}>Send</button>
     </div>
@@ -61,7 +137,7 @@
         {:else if errorMsg}
         <h4 class="error">{errorMsg}</h4>
         {/if}
-    </div>
+    </div> -->
 </main>
 
 <style>
@@ -72,24 +148,18 @@
         gap: 1rem;
     }
 
-    .folders {
+    .folders, .notes {
         display: flex;
         flex-direction: column;
         gap: 1rem;
+    }
+
+    .folders, .notes button {
+        max-width: max-content;
     }
 
     h4.error {
         color: #E0283D;
     }
 
-    @media (min-width: 500px) {
-        .folders {
-            flex-direction: row;
-            flex-wrap: wrap;
-        }
-
-        .folders input {
-            max-width: 400px;
-        }
-    }
 </style>
