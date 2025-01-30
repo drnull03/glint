@@ -101,7 +101,10 @@
 </script>
 
 <main>
-    <h3>Note categorizer</h3>
+    <div class="top">
+        <h3>Note categorizer</h3>
+        <a href="/logout"><button>Logout</button></a>
+    </div>
     <p>You can click on a folder or note to delete</p>
     <div class="folders">
         <p>Folders</p>
@@ -146,6 +149,13 @@
         display: flex;
         flex-direction: column;
         gap: 1rem;
+    }
+
+    .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        
     }
 
     .folders, .notes {
