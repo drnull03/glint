@@ -7,19 +7,28 @@
 
     let note;
 
-    const getFolder = async () => {
-        const folderRes = await fetch("../api/categorize", {
+    let selectedFolder = "";
+
+    const getFolder = () => {
+        loading = true;
+        fetch("../api/categorize", {
             method: "POST",
             body: JSON.stringify({
                 note, folders
             }),
             headers: {"Content-Type": "application/json"}
-        });
-        const folder = await folderRes.json();
-        return folder;
+        })
+        .then(res => res.json())
+        .then(folder => {
+            console.log(folder);
+            selectedFolder = folder;
+            loading = false;
+            note = "";
+        })
+        .catch(err => console.log(err))
     }
 
-    let showResult = false;
+    let loading = false;
 </script>
 
 <main>
@@ -31,23 +40,15 @@
     </div>
     <div>
         <input bind:value={note} type="text" placeholder="Type a new note...">
-        <button on:click={() => showResult = true}>Send</button>
+        <button on:click={getFolder}>Send</button>
     </div>
-    {#if showResult}
-    {#await getFolder()}
-        <div>
-            <h4>Choosing folder...</h4>
-        </div>
-    {:then folderName}
-        <div>
-            <h4>Folder: {folderName}</h4>
-        </div>
-    {:catch error}
-        <div>
-            <p>An error occured</p>
-        </div>
-    {/await}
-    {/if}
+    <div class="result">
+        {#if loading}
+        <h4>Choosing folder...</h4>
+        {:else if selectedFolder}
+        <h4>Folder: {selectedFolder}</h4>
+        {/if}
+    </div>
 </main>
 
 <style>
