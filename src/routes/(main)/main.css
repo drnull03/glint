@@ -129,3 +129,12 @@ button:active {
     border-color: #a1a1a1;
     color: black;
 }
+
+a {
+    color: #a1a1a1;
+    text-decoration: none;
+}
+
+a:hover {
+    color: white;
+}
