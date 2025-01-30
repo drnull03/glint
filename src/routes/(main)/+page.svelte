@@ -8,9 +8,11 @@
     let note;
 
     let selectedFolder = "";
+    let errorMsg = "";
 
     const getFolder = () => {
         loading = true;
+        errorMsg = "";
         fetch("../api/categorize", {
             method: "POST",
             body: JSON.stringify({
@@ -20,12 +22,21 @@
         })
         .then(res => res.json())
         .then(folder => {
+            if(folder.error) {
+                loading = false;
+                errorMsg = "Something went wrong, try using a VPN";
+                throw new Error("Something went wrong");
+            }
             console.log(folder);
             selectedFolder = folder;
             loading = false;
             note = "";
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+            console.log(err);
+            loading = false;
+            errorMsg = "Something went wrong, try using a VPN";
+        })
     }
 
     let loading = false;
@@ -47,6 +58,8 @@
         <h4>Choosing folder...</h4>
         {:else if selectedFolder}
         <h4>Folder: {selectedFolder}</h4>
+        {:else if errorMsg}
+        <h4 class="error">{errorMsg}</h4>
         {/if}
     </div>
 </main>
@@ -63,6 +76,10 @@
         display: flex;
         flex-direction: column;
         gap: 1rem;
+    }
+
+    h4.error {
+        color: #E0283D;
     }
 
     @media (min-width: 500px) {
