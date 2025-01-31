@@ -94,7 +94,7 @@
             <button on:click={() => {
                 selectedFolderID = folderID;
                 showFolderModal = true;
-            }}>{name}</button>
+            }}>{name} - {notes.filter(note => note.folderID == folderID).length || 0}</button>
             {:else}
                 <p>No folders</p>
         {/each}
