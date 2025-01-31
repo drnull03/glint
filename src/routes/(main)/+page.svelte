@@ -29,6 +29,7 @@
             notes.push(newNote);
             notes = notes;
             noteInput = "";
+            lightUpFolder(json.selectedFolderID);
         })
     }
 
@@ -102,6 +103,14 @@
             suggestionInput = "";
         })
     }
+
+    const lightUpFolder = (folderID) => {
+        folders.find(folder => folder.folderID == folderID).lightup = true;
+        setTimeout(() => {
+            folders.find(folder => folder.folderID == folderID).lightup = false;
+            folders = folders;
+        }, 750);
+    }
 </script>
 
 <FolderModal bind:show={showFolderModal} name={folders.find(folder => folder.folderID == selectedFolderID)?.name} notes={notes.filter(note => note.folderID == selectedFolderID)} noteClickFunction={deleteNote} folderDeleteFunction={() => {
@@ -120,11 +129,11 @@
         <a rel="external" href="/logout"><button>Logout</button></a>
     </div>
     <div class="folders">
-        {#each folders as { name, folderID }}
-            <button on:click={() => {
-                selectedFolderID = folderID;
+        {#each folders as folder}
+            <button class:light-up={folder.lightup} on:click={() => {
+                selectedFolderID = folder.folderID;
                 showFolderModal = true;
-            }}>{name} - {notes.filter(note => note.folderID == folderID).length || 0}</button>
+            }}>{folder.name} - {notes.filter(note => note.folderID == folder.folderID).length || 0}</button>
             {:else}
                 <p>No folders</p>
         {/each}
@@ -196,6 +205,11 @@
 
     .folders, .notes button {
         max-width: max-content;
+    }
+
+    .light-up {
+        background-color: white;
+        color: black;
     }
 
     /* h4.error {

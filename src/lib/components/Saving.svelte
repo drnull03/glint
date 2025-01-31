@@ -16,5 +16,6 @@
         translate: -50% 0;
         padding: 1rem;
         z-index: 1;
+        background-color: black;
     }
 </style>
