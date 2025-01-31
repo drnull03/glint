@@ -28,6 +28,7 @@
             newNote.folderID = json.selectedFolderID;
             notes.push(newNote);
             notes = notes;
+            noteInput = "";
         })
     }
 
@@ -46,6 +47,7 @@
             console.log(json);
             newFolder.folderID = json.folderID;
             folders = [...folders, newFolder];
+            folderInput = "";
         })
     }
 
