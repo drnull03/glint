@@ -1,4 +1,6 @@
 <script>
+    import FolderModal from '$lib/components/FolderModal.svelte';
+
     export let data;
     console.log(data);
     
@@ -98,7 +100,15 @@
             folders = folders.filter(folder => folder.folderID != folderID);
         })
     }
+
+    let showFolderModal = false;
+    let selectedFolderID;
 </script>
+
+<FolderModal bind:show={showFolderModal} name={folders[0]?.name} bind:notes={notes} noteClickFunction={deleteNote} folderDeleteFunction={() => {
+    deleteFolder(selectedFolderID);
+    showFolderModal = false;
+}} />
 
 <main>
     <div class="top">
@@ -109,13 +119,20 @@
     <div class="folders">
         <p>Folders</p>
         {#each folders as { name, folderID }}
-            <button on:click={() => deleteFolder(folderID)}>{name}</button>
+            <button on:click={() => {
+                showFolderModal = true;
+                selectedFolderID = folderID;
+            }}>{name}</button>
+            {:else}
+                <p>No folders</p>
         {/each}
     </div>
     <div class="notes">
         <p>Notes</p>
         {#each notes as { content, noteID }}
             <button on:click={() => deleteNote(noteID)}>{content}</button>
+            {:else}
+                <p>No notes</p>
         {/each}
     </div>
     <div>
@@ -155,7 +172,6 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        
     }
 
     .folders, .notes {
