@@ -11,6 +11,7 @@
     const createNote = () => {
         isSaving = true;
         if(!folders.length) {
+            isSaving = false;
             alert("You must have at least one folder");
             return;
         }
