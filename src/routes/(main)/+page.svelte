@@ -104,7 +104,7 @@
     }
 </script>
 
-<FolderModal bind:show={showFolderModal} name={folders[0]?.name} notes={notes.filter(note => note.folderID == selectedFolderID)} noteClickFunction={deleteNote} folderDeleteFunction={() => {
+<FolderModal bind:show={showFolderModal} name={folders.find(folder => folder.folderID == selectedFolderID)?.name} notes={notes.filter(note => note.folderID == selectedFolderID)} noteClickFunction={deleteNote} folderDeleteFunction={() => {
     deleteFolder(selectedFolderID);
     showFolderModal = false;
 }} />
