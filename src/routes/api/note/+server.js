@@ -63,7 +63,7 @@ export async function POST({ request, cookies }) {
         
         const { data, error } = await supabase
             .from('note')
-            .insert([{ content, folderID: newFolderData[0].folderID }])
+            .insert([{ content, folderID: newFolderData[0].folderID, userID }])
             .select();
 
         if (error) {
@@ -80,7 +80,7 @@ export async function POST({ request, cookies }) {
 
     const { data, error } = await supabase
         .from('note')
-        .insert([{ content, folderID: selectedFolderID }])
+        .insert([{ content, folderID: selectedFolderID, userID }])
         .select();
 
     if (error) {
