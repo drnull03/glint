@@ -30,6 +30,7 @@
                 newNote.folderID = json.newFolder.folderID;
                 notes.push(newNote);
                 notes = notes;
+                noteInput = "";
                 folders = [...folders, json.newFolder];
                 lightUpFolder(json.newFolder.folderID);
             }
