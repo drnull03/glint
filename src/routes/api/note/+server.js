@@ -12,7 +12,7 @@ const getFolder = async (note, folders) => {
     folders.forEach(folder => folderCompilation += `- ${folder.name} `);
     const completion = await openai.chat.completions.create({
         messages: [
-            { role: "system", content: `read a note from the user, then only return the name of the folder which the note is most likely to belong to out of these folders ${folderCompilation}`},
+            { role: "system", content: `read a note from the user, then only return the name of the folder which the note is most likely to belong to out of these folders ${folderCompilation}, if no folders fit the note then answer with a new folder name which should fit the note, in this case present your answer in this format: "newFolder:newfoldername"`},
             { role: "user", content: note },
         ],
         model: "gpt-4o-mini"
@@ -54,6 +54,28 @@ export async function POST({ request, cookies }) {
     }
 
     const selectedFolderName = await getFolder(content, folders);
+    if(selectedFolderName.includes("newFolder:")) {
+        const newFolderName = selectedFolderName.split(":")[1];
+        const { data: newFolderData, error: newFolderError } = await supabase
+            .from('folder')
+            .insert([{ name: newFolderName, userID }])
+            .select("*");
+        
+        const { data, error } = await supabase
+            .from('note')
+            .insert([{ content, folderID: newFolderData[0].folderID }])
+            .select();
+
+        if (error) {
+            return json(
+                { error: error.message },
+                { status: 500 }
+            );
+        }
+        return json(
+            { newFolder: newFolderData[0], status: true, noteID: data[0].noteID }
+        );
+    }
     const selectedFolderID = folders.find(folder => folder.name == selectedFolderName).folderID;
 
     const { data, error } = await supabase

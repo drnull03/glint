@@ -24,14 +24,27 @@
         .then(json => {
             isSaving = false;
             console.log(json);
-            newNote.noteID = json.noteID;
-            newNote.folderID = json.selectedFolderID;
-            notes.push(newNote);
-            notes = notes;
-            noteInput = "";
-            lightUpFolder(json.selectedFolderID);
+            if(json.newFolder) {
+                newNote.noteID = json.noteID;
+                newNote.folderID = json.newFolder.folderID;
+                notes.push(newNote);
+                notes = notes;
+                folders = [...folders, json.newFolder];
+                lightUpFolder(json.newFolder.folderID);
+            }
+
+            else {
+                newNote.noteID = json.noteID;
+                newNote.folderID = json.selectedFolderID;
+                notes.push(newNote);
+                notes = notes;
+                noteInput = "";
+                lightUpFolder(json.selectedFolderID);
+            }
         })
     }
+    
+    $: console.log(notes);
 
     let folderInput = "";
     const createFolder = () => {
