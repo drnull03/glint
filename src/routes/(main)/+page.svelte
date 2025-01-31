@@ -101,7 +101,7 @@
             <h3>Note categorizer</h3>
             <p>{data.email}</p>
         </div>
-        <a href="/logout"><button>Logout</button></a>
+        <a rel="external" href="/logout"><button>Logout</button></a>
     </div>
     <p>You can click on a folder or note to delete</p>
     <div class="folders">
