@@ -1,5 +1,6 @@
 <script>
     import FolderModal from '$lib/components/FolderModal.svelte';
+    import Saving from '$lib/components/Saving.svelte';
 
     export let data;
     
@@ -8,6 +9,7 @@
 
     let noteInput = "";
     const createNote = () => {
+        isSaving = true;
         if(!folders.length) {
             alert("You must have at least one folder");
             return;
@@ -20,6 +22,7 @@
         })
         .then(res => res.json())
         .then(json => {
+            isSaving = false;
             console.log(json);
             newNote.noteID = json.noteID;
             newNote.folderID = json.selectedFolderID;
@@ -30,6 +33,7 @@
 
     let folderInput = "";
     const createFolder = () => {
+        isSaving = true;
         const newFolder = { name: folderInput };
         fetch("../api/folder", {
             method: "POST",
@@ -38,6 +42,7 @@
         })
         .then(res => res.json())
         .then(json => {
+            isSaving = false;
             console.log(json);
             newFolder.folderID = json.folderID;
             folders = [...folders, newFolder];
@@ -45,6 +50,7 @@
     }
 
     const deleteNote = (noteID) => {
+        isSaving = true;
         fetch("../api/note", {
             method: "DELETE",
             body: JSON.stringify({ noteID }),
@@ -52,12 +58,14 @@
         })
         .then(res => res.json())
         .then(json => {
+            isSaving = false;
             console.log(json);
             notes = notes.filter(note => note.noteID != noteID);
         })
     }
 
     const deleteFolder = (folderID) => {
+        isSaving = true;
         fetch("../api/folder", {
             method: "DELETE",
             body: JSON.stringify({ folderID }),
@@ -65,6 +73,7 @@
         })
         .then(res => res.json())
         .then(json => {
+            isSaving = false;
             console.log(json);
             folders = folders.filter(folder => folder.folderID != folderID);
         })
@@ -73,12 +82,16 @@
     // Browsing folders
     let showFolderModal = false;
     let selectedFolderID;
+
+    let isSaving = false;
 </script>
 
 <FolderModal bind:show={showFolderModal} name={folders[0]?.name} notes={notes.filter(note => note.folderID == selectedFolderID)} noteClickFunction={deleteNote} folderDeleteFunction={() => {
     deleteFolder(selectedFolderID);
     showFolderModal = false;
 }} />
+
+<Saving bind:show={isSaving} />
 
 <main>
     <div class="top">
