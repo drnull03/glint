@@ -87,7 +87,7 @@ export const load = async ({ cookies }) => {
     let { notesData, foldersData } = await fetchData(userID);
     
     notesData = notesData.map(note => {
-        return { noteID: note.noteID, content: note.content, folderID: note.folder.folderID };
+        return { noteID: note.noteID, content: note.content, folderID: note.folder?.folderID };
     })
 
     // if (notesError) {

@@ -73,8 +73,6 @@
     // Browsing folders
     let showFolderModal = false;
     let selectedFolderID;
-
-    $: console.log(notes);
 </script>
 
 <FolderModal bind:show={showFolderModal} name={folders[0]?.name} notes={notes.filter(note => note.folderID == selectedFolderID)} noteClickFunction={deleteNote} folderDeleteFunction={() => {
@@ -84,7 +82,10 @@
 
 <main>
     <div class="top">
-        <h3>Note categorizer</h3>
+        <div>
+            <h3>Note categorizer</h3>
+            <p>{data.email}</p>
+        </div>
         <a href="/logout"><button>Logout</button></a>
     </div>
     <p>You can click on a folder or note to delete</p>
