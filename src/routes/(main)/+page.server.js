@@ -50,10 +50,6 @@ export const load = async ({ cookies }) => {
     // `)
     // .eq("folder.userID", userID);
 
-    // notesData = notesData.map(note => {
-    //     return { content: note.content, folderID: note.folder.folderID };
-    // })
-
     const fetchData = async (userID) => {
         const [
             { data: notesData, error: notesError },
@@ -88,7 +84,11 @@ export const load = async ({ cookies }) => {
         return { notesData, foldersData };
     };
       
-    const { notesData, foldersData } = await fetchData(userID);
+    let { notesData, foldersData } = await fetchData(userID);
+    
+    notesData = notesData.map(note => {
+        return { noteID: note.noteID, content: note.content, folderID: note.folder.folderID };
+    })
 
     // if (notesError) {
     //     console.log(notesError);

@@ -1,19 +1,64 @@
 import { supabase } from '$lib/supabaseClient';
 import { json } from '@sveltejs/kit';
 
-export async function POST({ request }) {
-    const { content, folderID } = await request.json();
+import { SECRET_API_KEY } from "$env/static/private";
+import OpenAI from "openai";
+import { SECRET_JWT_KEY } from "$env/static/private";
+import jwt from '@tsndr/cloudflare-worker-jwt';
 
-    if (!content || !folderID) {
+const openai = new OpenAI({ apiKey: SECRET_API_KEY });
+const getFolder = async (note, folders) => {
+    let folderCompilation = "";
+    folders.forEach(folder => folderCompilation += `- ${folder.name} `);
+    const completion = await openai.chat.completions.create({
+        messages: [
+            { role: "system", content: `read a note from the user, then only return the name of the folder which the note is most likely to belong to out of these folders ${folderCompilation}`},
+            { role: "user", content: note },
+        ],
+        model: "gpt-4o-mini"
+    });
+
+    console.log(completion.choices);
+  return completion.choices[0].message.content;
+}
+
+export async function POST({ request, cookies }) {
+    const { content } = await request.json();
+
+    if (!content) {
         return json(
-            { error: 'content and folderID are required' },
+            { error: 'note content is required' },
             { status: 400 }
         );
     }
 
+    const token = cookies.get("token");
+    if(!token) {
+        throw redirect(302, "/login");
+    }
+
+    const verifiedToken = await jwt.verify(token, SECRET_JWT_KEY);
+    const userData = verifiedToken.payload;
+    const userID = userData.userID;
+
+    const { data: folders, error: foldersError } = await supabase
+        .from('folder')
+        .select("folderID, name")
+        .eq("userID", userID);
+
+    if (foldersError) {
+        return json(
+            { error: foldersError.message },
+            { status: 500 }
+        );
+    }
+
+    const selectedFolderName = await getFolder(content, folders);
+    const selectedFolderID = folders.find(folder => folder.name == selectedFolderName).folderID;
+
     const { data, error } = await supabase
         .from('note')
-        .insert([{ content, folderID }])
+        .insert([{ content, folderID: selectedFolderID }])
         .select();
 
     if (error) {
@@ -22,9 +67,8 @@ export async function POST({ request }) {
             { status: 500 }
         );
     }
-
     return json(
-        { status: true, noteID: data[0].noteID }
+        { status: true, noteID: data[0].noteID, selectedFolderID }
     );
 }
 
