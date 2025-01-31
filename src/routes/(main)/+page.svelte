@@ -92,6 +92,7 @@
             isSaving = false;
             console.log(json);
             folders = folders.filter(folder => folder.folderID != folderID);
+            notes = notes.filter(note => note.folderID != folderID);
         })
     }
 
