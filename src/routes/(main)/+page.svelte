@@ -86,6 +86,22 @@
     let selectedFolderID;
 
     let isSaving = false;
+
+    let suggestionInput = "";
+    const sendSuggestion = () => {
+        isSaving = true;
+        fetch("../api/suggestion", {
+            method: "POST",
+            body: JSON.stringify({ content: suggestionInput }),
+            headers: {"Content-Type": "application/json"}
+        })
+        .then(res => res.json())
+        .then(json => {
+            isSaving = false;
+            console.log(json);
+            suggestionInput = "";
+        })
+    }
 </script>
 
 <FolderModal bind:show={showFolderModal} name={folders[0]?.name} notes={notes.filter(note => note.folderID == selectedFolderID)} noteClickFunction={deleteNote} folderDeleteFunction={() => {
@@ -103,9 +119,7 @@
         </div>
         <a rel="external" href="/logout"><button>Logout</button></a>
     </div>
-    <p>You can click on a folder or note to delete</p>
     <div class="folders">
-        <p>Folders</p>
         {#each folders as { name, folderID }}
             <button on:click={() => {
                 selectedFolderID = folderID;
@@ -124,15 +138,24 @@
         {/each}
     </div> -->
     <div>
-        <p>Adding a note</p>
+        <p>Add a note</p>
         <input bind:value={noteInput} type="text" placeholder="Create a new note...">
-        <button on:click={createNote}>Send</button>
+        <button on:click={createNote}>Add</button>
     </div>
     <div>
-        <p>Adding a folder</p>
+        <p>Add a folder</p>
         <input bind:value={folderInput} type="text" placeholder="Create a new folder...">
-        <button on:click={createFolder}>Send</button>
+        <button on:click={createFolder}>Add</button>
     </div>
+    <footer>
+        <div>
+            <p>Send a suggestion to the developer!</p>
+            <div>
+                <input bind:value={suggestionInput} type="text" placeholder="You could probably improve the-...">
+                <button on:click={sendSuggestion}>Send</button>
+            </div>
+        </div>
+    </footer>
 </main>
 
 <style>
@@ -141,12 +164,28 @@
         display: flex;
         flex-direction: column;
         gap: 1rem;
+        min-height: 100vh;
+        min-height: 100svh;
     }
 
     .top {
         display: flex;
         align-items: center;
         justify-content: space-between;
+    }
+
+    footer {
+        margin-block-start: auto;
+    }
+
+    footer div:has(input) div {
+        display: flex;
+        gap: 1rem;
+    }
+
+    
+    footer div:has(input) input {
+        flex: 1;
     }
 
     .folders, .notes {
