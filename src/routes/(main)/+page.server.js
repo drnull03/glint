@@ -57,12 +57,8 @@ export const load = async ({ cookies }) => {
         ] = await Promise.all([
             supabase
                 .from("note")
-                .select(`
-                    noteID,
-                    content,
-                    folder:folderID (folderID, name, userID)
-                `)
-            .eq("folder.userID", userID),
+                .select("*")
+            .eq("userID", userID),
             supabase
             .from("folder")
             .select("*")
@@ -86,20 +82,6 @@ export const load = async ({ cookies }) => {
       
     let { notesData, foldersData } = await fetchData(userID);
     
-    notesData = notesData.map(note => {
-        return { noteID: note.noteID, content: note.content, folderID: note.folder?.folderID };
-    })
-
-    // if (notesError) {
-    //     console.log(notesError);
-    //     cookies.delete("token", { path: "/" });
-    //     throw redirect(302, "/login");
-    // }
-
-    // const isUserVar = true;
-    // const tasksFromServer = tasksData;
-
-    // return {userID, email, isUserVar};
     return {notesData, foldersData, email};
 }
 
