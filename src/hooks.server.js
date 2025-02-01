@@ -1,5 +1,5 @@
 export async function handle({ event, resolve }) {
-    if (event.url.pathname === '/api/extension') {
+    if (event.url.pathname === '/api/extension' || event.url.pathname === '/api/extension/login') {
         if (event.request.method === 'OPTIONS') {
             return new Response(null, {
                 headers: {
