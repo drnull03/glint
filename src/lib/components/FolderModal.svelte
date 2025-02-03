@@ -49,6 +49,10 @@
         gap: 1rem;
         padding: 1rem;
         background-color: black;
+
+        max-height: calc(100vh - 2rem);
+        max-height: calc(100svh - 2rem);
+        overflow: auto;
     }
 
     .notes-in-folder {

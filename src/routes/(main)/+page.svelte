@@ -1,8 +1,11 @@
 <script>
     import FolderModal from '$lib/components/FolderModal.svelte';
     import Saving from '$lib/components/Saving.svelte';
+    import { onMount } from 'svelte';
 
     export let data;
+
+    console.log(data);
     
     let folders = data.foldersData;
     let notes = data.notesData;
@@ -101,6 +104,15 @@
     // Browsing folders
     let showFolderModal = false;
     let selectedFolderID;
+
+    onMount(() => {
+        // Adding the ability to escape the modal
+        document.addEventListener("keydown", e => {
+            if(showFolderModal && e.key == "Escape") {
+                showFolderModal = false;
+            }
+        })
+    })
 
     let isSaving = false;
 
@@ -213,13 +225,13 @@
         flex: 1;
     }
 
-    .folders, .notes {
+    .folders {
         display: flex;
         flex-direction: column;
         gap: 1rem;
     }
 
-    .folders, .notes button {
+    .folders {
         max-width: max-content;
     }
 

@@ -1,3 +1,4 @@
+// This file was added to allow http requests from other origins so that the extension would work
 export async function handle({ event, resolve }) {
     if (event.url.pathname === '/api/extension' || event.url.pathname === '/api/extension/login') {
         if (event.request.method === 'OPTIONS') {
