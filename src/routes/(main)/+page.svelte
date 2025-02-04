@@ -4,6 +4,161 @@
     import { onMount } from 'svelte';
 
     export let data;
+    // let data = {
+    //     "notesData": [
+    //         {
+    //             "noteID": 71,
+    //             "created_at": "2025-02-01T13:06:23.990799+00:00",
+    //             "content": "Watch Brothers 2009",
+    //             "folderID": 43,
+    //             "userID": 1
+    //         },
+    //         {
+    //             "noteID": 73,
+    //             "created_at": "2025-02-01T14:32:50.698638+00:00",
+    //             "content": "Figure out how to publish to the chrome store",
+    //             "folderID": 40,
+    //             "userID": 1
+    //         },
+    //         {
+    //             "noteID": 81,
+    //             "created_at": "2025-02-01T15:40:19.195592+00:00",
+    //             "content": "We need a Telegram bot as a front end to the note taking app",
+    //             "folderID": 47,
+    //             "userID": 1
+    //         },
+    //         {
+    //             "noteID": 88,
+    //             "created_at": "2025-02-01T15:53:37.409703+00:00",
+    //             "content": "Maybe use AI in the notes app to give you suggestions and ideas on executing the ideas you save in there and you'll be able to view the ideas whenever you log into your account, this could also be a paid feature",
+    //             "folderID": 42,
+    //             "userID": 1
+    //         },
+    //         {
+    //             "noteID": 91,
+    //             "created_at": "2025-02-01T16:01:34.074021+00:00",
+    //             "content": "The notes app could behave like autocomplete showing the top three suggested folders, the new ones will have a different color as well, should be very very easy to navigate",
+    //             "folderID": 48,
+    //             "userID": 1
+    //         },
+    //         {
+    //             "noteID": 92,
+    //             "created_at": "2025-02-01T16:03:11.477378+00:00",
+    //             "content": "Check out the new O3-mini model and investigate their API",
+    //             "folderID": 47,
+    //             "userID": 1
+    //         },
+    //         {
+    //             "noteID": 96,
+    //             "created_at": "2025-02-01T16:47:46.493642+00:00",
+    //             "content": "We need the notes app to help with a think tank",
+    //             "folderID": 48,
+    //             "userID": 1
+    //         },
+    //         {
+    //             "noteID": 97,
+    //             "created_at": "2025-02-01T16:48:29.853624+00:00",
+    //             "content": "Do the @folderName in the notes app",
+    //             "folderID": 48,
+    //             "userID": 1
+    //         },
+    //         {
+    //             "noteID": 98,
+    //             "created_at": "2025-02-01T16:49:18.317527+00:00",
+    //             "content": "The notes app should be able to help with journaling",
+    //             "folderID": 48,
+    //             "userID": 1
+    //         },
+    //         {
+    //             "noteID": 99,
+    //             "created_at": "2025-02-01T16:49:38.738622+00:00",
+    //             "content": "The notes app should be able to habit track, it could be a paid feature",
+    //             "folderID": 48,
+    //             "userID": 1
+    //         },
+    //         {
+    //             "noteID": 101,
+    //             "created_at": "2025-02-01T16:51:19.916537+00:00",
+    //             "content": "Investigate the notes app's ability to be a community",
+    //             "folderID": 48,
+    //             "userID": 1
+    //         },
+    //         {
+    //             "noteID": 102,
+    //             "created_at": "2025-02-01T16:53:21.121208+00:00",
+    //             "content": "The notes app could help compile resources and authors of specific materials",
+    //             "folderID": 48,
+    //             "userID": 1
+    //         },
+    //         {
+    //             "noteID": 103,
+    //             "created_at": "2025-02-01T16:54:47.202983+00:00",
+    //             "content": "The notes app's modal should have a max height and an overflow-y of auto",
+    //             "folderID": 48,
+    //             "userID": 1
+    //         },
+    //         {
+    //             "noteID": 114,
+    //             "created_at": "2025-02-02T20:11:05.56729+00:00",
+    //             "content": "Check out n8n, maybe host it on Sallat's VPS for testing",
+    //             "folderID": 47,
+    //             "userID": 1
+    //         },
+    //         {
+    //             "noteID": 117,
+    //             "created_at": "2025-02-03T02:33:22.210544+00:00",
+    //             "content": "Learn prompt engineering",
+    //             "folderID": 59,
+    //             "userID": 1
+    //         },
+    //         {
+    //             "noteID": 118,
+    //             "created_at": "2025-02-03T04:58:12.271075+00:00",
+    //             "content": "Try loading in all user data or folder-specific data to help with note context in the notes app",
+    //             "folderID": 48,
+    //             "userID": 1
+    //         }
+    //     ],
+    //     "foldersData": [
+    //         {
+    //             "folderID": 40,
+    //             "created_at": "2025-02-01T01:40:17.752735+00:00",
+    //             "name": "Chrome extension",
+    //             "userID": 1
+    //         },
+    //         {
+    //             "folderID": 42,
+    //             "created_at": "2025-02-01T12:12:52.683389+00:00",
+    //             "name": "SaaS ideas",
+    //             "userID": 1
+    //         },
+    //         {
+    //             "folderID": 43,
+    //             "created_at": "2025-02-01T13:06:23.910526+00:00",
+    //             "name": "Movies to Watch",
+    //             "userID": 1
+    //         },
+    //         {
+    //             "folderID": 47,
+    //             "created_at": "2025-02-01T15:40:19.143287+00:00",
+    //             "name": "Telegram Bot Ideas",
+    //             "userID": 1
+    //         },
+    //         {
+    //             "folderID": 48,
+    //             "created_at": "2025-02-01T16:01:33.995633+00:00",
+    //             "name": "Notes App Features",
+    //             "userID": 1
+    //         },
+    //         {
+    //             "folderID": 59,
+    //             "created_at": "2025-02-03T02:33:22.129158+00:00",
+    //             "name": "Prompt Engineering Ideas",
+    //             "userID": 1
+    //         }
+    //     ],
+    //     "email": "zain@gmail.com"
+    // }
 
     console.log(data);
     
@@ -49,8 +204,6 @@
         })
     }
     
-    $: console.log(notes);
-
     let folderInput = "";
     const createFolder = () => {
         isSaving = true;
@@ -139,6 +292,12 @@
             folders = folders;
         }, 750);
     }
+
+    const formatDate = (ms) => {
+        const date = new Date(ms);
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        return date.toLocaleDateString('en-US', options);
+    }
 </script>
 
 <FolderModal bind:show={showFolderModal} name={folders.find(folder => folder.folderID == selectedFolderID)?.name} notes={notes.filter(note => note.folderID == selectedFolderID)} noteClickFunction={deleteNote} folderDeleteFunction={() => {
@@ -161,7 +320,10 @@
             <button class:light-up={folder.lightup} on:click={() => {
                 selectedFolderID = folder.folderID;
                 showFolderModal = true;
-            }}>{folder.name} - {notes.filter(note => note.folderID == folder.folderID).length || 0}</button>
+            }}>
+                <p>{folder.name} | {notes.filter(note => note.folderID == folder.folderID).length || 0}</p>
+                <p class="fs-xs date">{formatDate(folder.created_at)}</p>
+            </button>
             {:else}
                 <p>No folders</p>
         {/each}
@@ -227,17 +389,18 @@
 
     .folders {
         display: flex;
-        flex-direction: column;
         gap: 1rem;
-    }
-
-    .folders {
+        flex-wrap: wrap;
         max-width: max-content;
     }
 
     .light-up {
         background-color: white;
         color: black;
+    }
+
+    .date {
+        color: #a1a1a1aa;
     }
 
     /* h4.error {
