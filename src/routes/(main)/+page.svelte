@@ -177,7 +177,7 @@
         fetch("../api/note", {
             method: "POST",
             body: JSON.stringify(newNote),
-            headers: {"Content-Type": "application/json"}
+            headers: {"Content-Type": "application/json", "cf-ipcountry": undefined, "cf-connecting-ip": undefined}
         })
         .then(res => res.json())
         .then(json => {
