@@ -6,7 +6,11 @@ import OpenAI from "openai";
 import { SECRET_JWT_KEY } from "$env/static/private";
 import jwt from '@tsndr/cloudflare-worker-jwt';
 
-const openai = new OpenAI({ apiKey: SECRET_API_KEY });
+const openai = new OpenAI({ apiKey: SECRET_API_KEY, defaultHeaders: {
+    "CF-IPCountry": undefined,
+    "X-Forwarded-For": undefined,
+} });
+
 const getFolder = async (note, folders) => {
     let folderCompilation = "";
     folders.forEach(folder => folderCompilation += `- ${folder.name} `);
