@@ -2,35 +2,15 @@
     import { Tipex, Utility, defaultExtensions } from "@friendofsvelte/tipex";
     import TextAlign from "@tiptap/extension-text-align";
     import Mention from "@tiptap/extension-mention";
-    import { onMount } from "svelte";
     import tippy from "tippy.js";
 
-    import "@friendofsvelte/tipex/styles/Tipex.css";
     import "@friendofsvelte/tipex/styles/ProseMirror.css";
-    import "@friendofsvelte/tipex/styles/Controls.css";
-    import "@friendofsvelte/tipex/styles/EditLink.css";
-    import "@friendofsvelte/tipex/styles/CodeBlock.css";
+
+    import "./editor.css";
 
     let editor;
-    let display;
-    let displayBody = "<p>Your saved text will appear here</p>";
 
     let mentionList = ["Tasks", "Sallat", "Get more sales"];
-
-    const save = () => {
-        console.log(editor.getJSON());
-        console.log(editor.isEmpty);
-        if (editor.isEmpty) {
-            alert("Editor is empty");
-            return;
-        }
-        // Save content from editor into display.
-        display.commands.setContent(editor.getJSON());
-    };
-
-    onMount(() => {
-        display.setEditable(false);
-    });
 
     const suggestion = {
         char: "@",
@@ -139,49 +119,26 @@
     ];
 </script>
 
-<main>
-    <Tipex
-        extensions={editorExtensions}
-        bind:tipex={editor}
-        class="editor"
-        controls
-        floating
-    >
-        {#snippet utilities(tipex)}
-            <Utility {tipex} />
-        {/snippet}
-    </Tipex>
-    <button on:click={save}>Save</button>
-    <Tipex
-        extensions={editorExtensions}
-        bind:tipex={display}
-        class="editor"
-        body={displayBody}
-    ></Tipex>
-</main>
+<Tipex
+    extensions={editorExtensions}
+    bind:tipex={editor}
+    class="editor"
+    floating
+>
+</Tipex>
 
 <style>
-    main {
-        font-family: sans-serif;
-    }
-
-    :global(.editor) {
-        max-width: 600px;
-        margin-top: 100px;
-        margin-inline: auto;
-    }
-
     :global(.suggestion) {
-        background: white;
-        border: 1px solid #ddd;
-        border-radius: 4px;
+        background: black;
+        border: 1px solid #a1a1a166;
         padding: 4px;
+        color: #a1a1a1;
     }
     :global(.suggestion .item) {
         padding: 4px 8px;
         cursor: pointer;
     }
     :global(.suggestion .item.selected) {
-        background: #efefef;
+        background: #a1a1a166;
     }
 </style>
