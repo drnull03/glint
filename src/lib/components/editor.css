@@ -1,6 +1,6 @@
 .tiptap {
     background-color: black;
-    border: 1px solid #a1a1a166;
+    /* border: 1px solid #a1a1a166; */
     color: #a1a1a1 !important;
     padding: 1rem;
 }
@@ -11,4 +11,18 @@
 
 .tipex-editor-section .ProseMirror h1 {
     color: #a1a1a1 !important;
+}
+
+.suggestion {
+    background: black;
+    border: 1px solid #a1a1a166;
+    padding: 4px;
+    color: #a1a1a1;
+}
+.suggestion .item {
+    padding: 4px 8px;
+    cursor: pointer;
+}
+.suggestion .item.selected {
+    background: #a1a1a166;
 }

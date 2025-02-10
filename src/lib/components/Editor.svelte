@@ -8,9 +8,9 @@
 
     import "./editor.css";
 
-    let editor;
+    export let editor;
 
-    let mentionList = ["Tasks", "Sallat", "Get more sales"];
+    export let mentionList = ["Tasks", "Sallat", "Get more sales"];
 
     const suggestion = {
         char: "@",
@@ -126,19 +126,3 @@
     floating
 >
 </Tipex>
-
-<style>
-    :global(.suggestion) {
-        background: black;
-        border: 1px solid #a1a1a166;
-        padding: 4px;
-        color: #a1a1a1;
-    }
-    :global(.suggestion .item) {
-        padding: 4px 8px;
-        cursor: pointer;
-    }
-    :global(.suggestion .item.selected) {
-        background: #a1a1a166;
-    }
-</style>

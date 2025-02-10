@@ -1,171 +1,18 @@
 <script>
+    import toggleSidebarIconSrc from "$lib/assets/icons/toggle-sidebar-icon.svg";
+    import addIconSrc from "$lib/assets/icons/add-icon.svg";
     import FolderModal from '$lib/components/FolderModal.svelte';
     import Saving from '$lib/components/Saving.svelte';
     import { onMount } from 'svelte';
+    import { fly } from "svelte/transition";
+    import Editor from "$lib/components/Editor.svelte";
 
-    export let data;
-    // let data = {
-    //     "notesData": [
-    //         {
-    //             "noteID": 71,
-    //             "created_at": "2025-02-01T13:06:23.990799+00:00",
-    //             "content": "Watch Brothers 2009",
-    //             "folderID": 43,
-    //             "userID": 1
-    //         },
-    //         {
-    //             "noteID": 73,
-    //             "created_at": "2025-02-01T14:32:50.698638+00:00",
-    //             "content": "Figure out how to publish to the chrome store",
-    //             "folderID": 40,
-    //             "userID": 1
-    //         },
-    //         {
-    //             "noteID": 81,
-    //             "created_at": "2025-02-01T15:40:19.195592+00:00",
-    //             "content": "We need a Telegram bot as a front end to the note taking app",
-    //             "folderID": 47,
-    //             "userID": 1
-    //         },
-    //         {
-    //             "noteID": 88,
-    //             "created_at": "2025-02-01T15:53:37.409703+00:00",
-    //             "content": "Maybe use AI in the notes app to give you suggestions and ideas on executing the ideas you save in there and you'll be able to view the ideas whenever you log into your account, this could also be a paid feature",
-    //             "folderID": 42,
-    //             "userID": 1
-    //         },
-    //         {
-    //             "noteID": 91,
-    //             "created_at": "2025-02-01T16:01:34.074021+00:00",
-    //             "content": "The notes app could behave like autocomplete showing the top three suggested folders, the new ones will have a different color as well, should be very very easy to navigate",
-    //             "folderID": 48,
-    //             "userID": 1
-    //         },
-    //         {
-    //             "noteID": 92,
-    //             "created_at": "2025-02-01T16:03:11.477378+00:00",
-    //             "content": "Check out the new O3-mini model and investigate their API",
-    //             "folderID": 47,
-    //             "userID": 1
-    //         },
-    //         {
-    //             "noteID": 96,
-    //             "created_at": "2025-02-01T16:47:46.493642+00:00",
-    //             "content": "We need the notes app to help with a think tank",
-    //             "folderID": 48,
-    //             "userID": 1
-    //         },
-    //         {
-    //             "noteID": 97,
-    //             "created_at": "2025-02-01T16:48:29.853624+00:00",
-    //             "content": "Do the @folderName in the notes app",
-    //             "folderID": 48,
-    //             "userID": 1
-    //         },
-    //         {
-    //             "noteID": 98,
-    //             "created_at": "2025-02-01T16:49:18.317527+00:00",
-    //             "content": "The notes app should be able to help with journaling",
-    //             "folderID": 48,
-    //             "userID": 1
-    //         },
-    //         {
-    //             "noteID": 99,
-    //             "created_at": "2025-02-01T16:49:38.738622+00:00",
-    //             "content": "The notes app should be able to habit track, it could be a paid feature",
-    //             "folderID": 48,
-    //             "userID": 1
-    //         },
-    //         {
-    //             "noteID": 101,
-    //             "created_at": "2025-02-01T16:51:19.916537+00:00",
-    //             "content": "Investigate the notes app's ability to be a community",
-    //             "folderID": 48,
-    //             "userID": 1
-    //         },
-    //         {
-    //             "noteID": 102,
-    //             "created_at": "2025-02-01T16:53:21.121208+00:00",
-    //             "content": "The notes app could help compile resources and authors of specific materials",
-    //             "folderID": 48,
-    //             "userID": 1
-    //         },
-    //         {
-    //             "noteID": 103,
-    //             "created_at": "2025-02-01T16:54:47.202983+00:00",
-    //             "content": "The notes app's modal should have a max height and an overflow-y of auto",
-    //             "folderID": 48,
-    //             "userID": 1
-    //         },
-    //         {
-    //             "noteID": 114,
-    //             "created_at": "2025-02-02T20:11:05.56729+00:00",
-    //             "content": "Check out n8n, maybe host it on Sallat's VPS for testing",
-    //             "folderID": 47,
-    //             "userID": 1
-    //         },
-    //         {
-    //             "noteID": 117,
-    //             "created_at": "2025-02-03T02:33:22.210544+00:00",
-    //             "content": "Learn prompt engineering",
-    //             "folderID": 59,
-    //             "userID": 1
-    //         },
-    //         {
-    //             "noteID": 118,
-    //             "created_at": "2025-02-03T04:58:12.271075+00:00",
-    //             "content": "Try loading in all user data or folder-specific data to help with note context in the notes app",
-    //             "folderID": 48,
-    //             "userID": 1
-    //         }
-    //     ],
-    //     "foldersData": [
-    //         {
-    //             "folderID": 40,
-    //             "created_at": "2025-02-01T01:40:17.752735+00:00",
-    //             "name": "Chrome extension",
-    //             "userID": 1
-    //         },
-    //         {
-    //             "folderID": 42,
-    //             "created_at": "2025-02-01T12:12:52.683389+00:00",
-    //             "name": "SaaS ideas",
-    //             "userID": 1
-    //         },
-    //         {
-    //             "folderID": 43,
-    //             "created_at": "2025-02-01T13:06:23.910526+00:00",
-    //             "name": "Movies to Watch",
-    //             "userID": 1
-    //         },
-    //         {
-    //             "folderID": 47,
-    //             "created_at": "2025-02-01T15:40:19.143287+00:00",
-    //             "name": "Telegram Bot Ideas",
-    //             "userID": 1
-    //         },
-    //         {
-    //             "folderID": 48,
-    //             "created_at": "2025-02-01T16:01:33.995633+00:00",
-    //             "name": "Notes App Features",
-    //             "userID": 1
-    //         },
-    //         {
-    //             "folderID": 59,
-    //             "created_at": "2025-02-03T02:33:22.129158+00:00",
-    //             "name": "Prompt Engineering Ideas",
-    //             "userID": 1
-    //         }
-    //     ],
-    //     "email": "zain@gmail.com"
-    // }
+    // export let data;
 
-    console.log(data);
-    
-    let folders = data.foldersData;
-    let notes = data.notesData;
+    let data = {
+        "email": "zain@gmail.com"
+    }
 
-    let noteInput = "";
     const createNote = () => {
         isSaving = true;
         if(!folders.length) {
@@ -204,7 +51,6 @@
         })
     }
     
-    let folderInput = "";
     const createFolder = () => {
         isSaving = true;
         const newFolder = { name: folderInput };
@@ -254,22 +100,8 @@
         })
     }
 
-    // Browsing folders
-    let showFolderModal = false;
-    let selectedFolderID;
-
-    onMount(() => {
-        // Adding the ability to escape the modal
-        document.addEventListener("keydown", e => {
-            if(showFolderModal && e.key == "Escape") {
-                showFolderModal = false;
-            }
-        })
-    })
-
     let isSaving = false;
 
-    let suggestionInput = "";
     const sendSuggestion = () => {
         isSaving = true;
         fetch("../api/suggestion", {
@@ -298,109 +130,365 @@
         const options = { year: 'numeric', month: 'short', day: 'numeric' };
         return date.toLocaleDateString('en-US', options);
     }
-</script>
 
-<FolderModal bind:show={showFolderModal} name={folders.find(folder => folder.folderID == selectedFolderID)?.name} notes={notes.filter(note => note.folderID == selectedFolderID)} noteClickFunction={deleteNote} folderDeleteFunction={() => {
-    deleteFolder(selectedFolderID);
-    showFolderModal = false;
-}} />
+    let folders = [
+        {
+            name: "Tasks",
+            content: {
+                "type": "doc",
+                "content": [
+                    {
+                        "type": "heading",
+                        "attrs": {
+                            "textAlign": null,
+                            "level": 1
+                        },
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "50 types of washing machines"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "paragraph",
+                        "attrs": {
+                            "textAlign": null
+                        },
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "Here're 50 useful machines"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "bulletList",
+                        "content": [
+                            {
+                                "type": "listItem",
+                                "content": [
+                                    {
+                                        "type": "paragraph",
+                                        "attrs": {
+                                            "textAlign": null
+                                        },
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "text": "The big one"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "listItem",
+                                "content": [
+                                    {
+                                        "type": "paragraph",
+                                        "attrs": {
+                                            "textAlign": null
+                                        },
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "text": "The smaller one"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "listItem",
+                                "content": [
+                                    {
+                                        "type": "paragraph",
+                                        "attrs": {
+                                            "textAlign": null
+                                        },
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "text": "The smallest one"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            name: "Sallat",
+            content: {
+                "type": "doc",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "attrs": {
+                            "textAlign": null
+                        },
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "Fix the last bug you encountered"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "paragraph",
+                        "attrs": {
+                            "textAlign": null
+                        },
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "The bug could be identified by scanning the code"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            name: "SaaS",
+            content: {
+                "type": "doc",
+                "content": [
+                    {
+                        "type": "heading",
+                        "attrs": {
+                            "textAlign": null,
+                            "level": 1
+                        },
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "We have a lot of ideas"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "orderedList",
+                        "attrs": {
+                            "start": 1
+                        },
+                        "content": [
+                            {
+                                "type": "listItem",
+                                "content": [
+                                    {
+                                        "type": "paragraph",
+                                        "attrs": {
+                                            "textAlign": null
+                                        },
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "text": "Fitness app"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "listItem",
+                                "content": [
+                                    {
+                                        "type": "paragraph",
+                                        "attrs": {
+                                            "textAlign": null
+                                        },
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "text": "Education"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "listItem",
+                                "content": [
+                                    {
+                                        "type": "paragraph",
+                                        "attrs": {
+                                            "textAlign": null
+                                        },
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "text": "Restaurants"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "paragraph",
+                        "attrs": {
+                            "textAlign": null
+                        },
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "This should be fun"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+    ]
+
+    let isSidebarActive = true;
+    let isNewFolderInputActive = false;
+
+    let editor;
+</script>
 
 <Saving bind:show={isSaving} />
 
 <main>
-    <div class="top">
+    <div class="sidebar" class:active={isSidebarActive}>
         <div>
-            <h3>Note categorizer</h3>
-            <p>{data.email}</p>
-        </div>
-        <a rel="external" href="/logout"><button>Logout</button></a>
-    </div>
-    <div class="folders">
-        {#each folders as folder}
-            <button class:light-up={folder.lightup} on:click={() => {
-                selectedFolderID = folder.folderID;
-                showFolderModal = true;
-            }}>
-                <p>{folder.name} | {notes.filter(note => note.folderID == folder.folderID).length || 0}</p>
-                <p class="fs-xs date">{formatDate(folder.created_at)}</p>
-            </button>
-            {:else}
-                <p>No folders</p>
-        {/each}
-    </div>
-    <!-- <div class="notes">
-        <p>Notes</p>
-        {#each notes as { content, noteID }}
-            <button on:click={() => deleteNote(noteID)}>{content}</button>
-            {:else}
-                <p>No notes</p>
-        {/each}
-    </div> -->
-    <div>
-        <p>Add a note</p>
-        <input bind:value={noteInput} type="text" placeholder="Create a new note...">
-        <button on:click={createNote}>Add</button>
-    </div>
-    <div>
-        <p>Add a folder</p>
-        <input bind:value={folderInput} type="text" placeholder="Create a new folder...">
-        <button on:click={createFolder}>Add</button>
-    </div>
-    <footer>
-        <div>
-            <p>Send a suggestion to the developer!</p>
             <div>
-                <input bind:value={suggestionInput} type="text" placeholder="You could probably improve the-...">
-                <button on:click={sendSuggestion}>Send</button>
+                <h3>Folders</h3>
+                <button on:click={() => isNewFolderInputActive = !isNewFolderInputActive}><img src="{addIconSrc}" alt="add"></button>
+            </div>
+            {#if isNewFolderInputActive}
+            <input transition:fly={{ y: -100, duration: 200 }} type="text" placeholder="New folder name">
+            {/if}
+        </div>
+        <div class="folders">
+            {#each folders as folder}
+                <button on:click={() => editor.commands.setContent(folder.content)} class="folder">
+                    <p class="bold">{folder.name}</p>
+                    <p>{folder.content.content[0].content[0].text.slice(0, 20)}...</p>
+                </button>
+            {/each}
+        </div>
+    </div>
+    <div class="content">
+        <div class="top">
+            <button class:active={isSidebarActive} class="sidebar-toggle" on:click={() => {
+                isSidebarActive = !isSidebarActive;
+            }}><img src="{toggleSidebarIconSrc}" alt="toggle sidebar"></button>
+            <h3>Note organizer</h3>
+            <div>
+                <p>{data.email}</p>
+                <a class="button" rel="external" href="/logout">Logout</a>
             </div>
         </div>
-    </footer>
+        <div class="editor-container">
+            <div class="editor">
+                <Editor bind:editor mentionList={folders.map(folder => folder.name)} />
+            </div>
+        </div>
+    </div>
 </main>
 
 <style>
     main {
-        padding: 1rem;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
         min-height: 100vh;
         min-height: 100svh;
+        display: flex;
     }
 
     .top {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        gap: .5rem;
+        padding: .5rem;
+        background-color: black;
+        border-bottom: 1px solid #a1a1a166;
+
+        position: sticky;
+        top: 0;
     }
 
-    footer {
-        margin-block-start: auto;
-    }
-
-    footer div:has(input) div {
+    .top > div {
         display: flex;
         gap: 1rem;
+        align-items: center;
     }
 
-    
-    footer div:has(input) input {
+    .sidebar-toggle {
+        border: 0;
+        padding: .2rem;
+    }
+
+    .sidebar-toggle img {
+        width: 30px;
+        transition: rotate 150ms ease;
+        rotate: -180deg;
+    }
+
+    .sidebar-toggle.active img {
+        rotate: 0deg;
+    }
+
+    .content {
         flex: 1;
+        /* border: 1px solid red; */
+    }
+
+    .sidebar {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        height: 100svh;
+        /* border: 1px solid red; */
+        border-right: 1px solid #a1a1a166;
+        padding: .5rem;
+
+        transition: all 150ms ease;
+        padding-inline: 0;
+        overflow: hidden;
+        max-width: 0;
+        opacity: 0;
+    }
+
+    .sidebar.active {
+        opacity: 1;
+        padding-inline: .5rem;
+        max-width: 200px;
+    }
+
+    .sidebar > div:first-of-type {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+    }
+
+    .sidebar > div:first-of-type > div {
+        display: flex;
+        justify-content: space-between;
+        gap: .5rem;
     }
 
     .folders {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        max-width: max-content;
+        margin-block-start: .5rem;
     }
 
-    .light-up {
-        background-color: white;
-        color: black;
+    button.folder {
+        text-align: start;
     }
 
-    .date {
-        color: #a1a1a1aa;
+    .editor-container {
+        padding: .5rem;
+    }
+
+    .editor {
+        max-width: 700px;
+        margin-inline: auto;
     }
 
     /* h4.error {

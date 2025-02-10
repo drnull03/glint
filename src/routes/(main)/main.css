@@ -96,6 +96,10 @@ select {
 .fs-500 {font-size: var(--fs-500);}
 .fs-xl {font-size: var(--fs-xl);}
 
+.bold {
+    font-weight: 800;
+}
+
 /* ------------------- */
 /* Styles              */
 /* ------------------- */
@@ -111,7 +115,7 @@ button {
     cursor: pointer;
 }
 
-button, input {
+button, input, a.button {
     padding: .2rem .4rem;
     border: 1px solid #a1a1a166;
     color: #a1a1a1;
@@ -119,12 +123,12 @@ button, input {
     border-radius: 0;
 }
 
-button:hover, input:hover {
+button:hover, input:hover, a.button:hover {
     color: white;
     border-color: white;
 }
 
-button:active {
+button:active, a.button:active {
     background-color: #a1a1a1;
     border-color: #a1a1a1;
     color: black;
