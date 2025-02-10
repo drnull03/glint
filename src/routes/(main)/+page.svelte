@@ -355,9 +355,9 @@
 
 <Saving bind:show={isSaving} />
 
-<main>
+<main class="fs-300">
     <div class="sidebar" class:active={isSidebarActive}>
-        <div>
+        <div class="controls">
             <div>
                 <h3>Folders</h3>
                 <button on:click={() => isNewFolderInputActive = !isNewFolderInputActive}><img src="{addIconSrc}" alt="add"></button>
@@ -368,7 +368,7 @@
         </div>
         <div class="folders">
             {#each folders as folder}
-                <button on:click={() => editor.commands.setContent(folder.content)} class="folder">
+                <button on:click={() => editor.commands.setContent(folder.content)} class="folder fs-xs">
                     <p class="bold">{folder.name}</p>
                     <p>{folder.content.content[0].content[0].text.slice(0, 20)}...</p>
                 </button>
@@ -411,6 +411,7 @@
         border-bottom: 1px solid #a1a1a166;
 
         position: sticky;
+        z-index: 1;
         top: 0;
     }
 
@@ -447,11 +448,12 @@
         height: 100svh;
         /* border: 1px solid red; */
         border-right: 1px solid #a1a1a166;
-        padding: .5rem;
+        padding-bottom: .5rem;
 
         transition: all 150ms ease;
         padding-inline: 0;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
         max-width: 0;
         opacity: 0;
     }
@@ -462,13 +464,17 @@
         max-width: 200px;
     }
 
-    .sidebar > div:first-of-type {
+    .sidebar .controls {
         display: flex;
         flex-direction: column;
         gap: .5rem;
+        position: sticky;
+        top: 0;
+        background-color: black;
+        padding-block: .5rem;
     }
 
-    .sidebar > div:first-of-type > div {
+    .sidebar .controls > div {
         display: flex;
         justify-content: space-between;
         gap: .5rem;
@@ -480,6 +486,10 @@
 
     button.folder {
         text-align: start;
+    }
+
+    button.folder:not(:last-of-type) {
+        margin-bottom: .5rem;
     }
 
     .editor-container {

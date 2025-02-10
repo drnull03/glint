@@ -100,6 +100,40 @@ select {
     font-weight: 800;
 }
 
+
+/* ------------------- */
+/* Scrollbars          */
+/* ------------------- */
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #a1a1a166 transparent;
+}
+
+*::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #a1a1a166;
+    border-radius: 3px;
+    border: 1px solid transparent;
+}
+
+/* Hover state */
+*::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
+
+*::-webkit-scrollbar-thumb:active {
+    background-color: #444;
+}
+
 /* ------------------- */
 /* Styles              */
 /* ------------------- */
@@ -141,4 +175,4 @@ a {
 
 a:hover {
     color: white;
-}
+}  
