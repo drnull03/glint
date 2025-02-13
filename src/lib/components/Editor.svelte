@@ -1,6 +1,8 @@
 <script>
     import { Tipex, Utility, defaultExtensions } from "@friendofsvelte/tipex";
     import TextAlign from "@tiptap/extension-text-align";
+    import TaskList from "@tiptap/extension-task-list";
+    import TaskItem from "@tiptap/extension-task-item";
     import Mention from "@tiptap/extension-mention";
     import tippy from "tippy.js";
 
@@ -115,7 +117,14 @@
             types: ["heading", "paragraph"],
             alignments: ["left", "right"]
         }),
-        Mention.configure({ suggestion })
+        Mention.configure({ suggestion }),
+        TaskItem.configure({
+            nested: true,
+        }),
+        TaskList.configure({
+            itemTypeName: 'taskItem',
+        })
+
     ];
 </script>
 
