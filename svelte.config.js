@@ -1,13 +1,29 @@
-import adapter from '@sveltejs/adapter-auto';
+import adapterStatic from '@sveltejs/adapter-static';
+import adapterAuto from '@sveltejs/adapter-auto';
 
-/** @type {import('@sveltejs/kit').Config} */
+const isMobile = process.env.TARGET === 'mobile';
+
 const config = {
-	kit: {
-		// adapter-auto only supports some environments, see https://svelte.dev/docs/kit/adapter-auto for a list.
-		// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
-		// See https://svelte.dev/docs/kit/adapters for more information about adapters.
-		adapter: adapter()
-	}
+  kit: {
+    adapter: isMobile
+      ? adapterStatic({
+          pages: 'build-mobile',
+          assets: 'build-mobile',
+          fallback: null,
+          strict: false // ignore dynamic routes (since they won't be present in mobile)
+        })
+      : adapterAuto(),
+    // prerender: isMobile
+    //   ? {
+    //       crawl: false,       // Prevent automatic crawling
+    //       entries: ['/mobile'] // Only prerender the /mobile route
+    //     }
+    //   : {},
+    files: {
+      // Use only the mobile routes folder when building for mobile
+      routes: isMobile ? 'src/mobile-routes' : 'src/routes'
+    }
+  }
 };
 
 export default config;
