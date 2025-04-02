@@ -14,7 +14,7 @@ const generateJWT = async (userID, email) => {
 
 const checkUserCredentials = async (email, password) => {
     const { data: user, error } = await supabase
-    .from('user')
+    .from('glint_user')
     .select('userID, password')
     .eq('email', email)
     .single();

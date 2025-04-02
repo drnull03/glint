@@ -17,7 +17,7 @@ const insertUser = async (name, email, password) => {
         return;
     }
     const { data, error } = await supabase
-    .from('user')
+    .from('glint_user')
     .insert([
         {
             name: name,

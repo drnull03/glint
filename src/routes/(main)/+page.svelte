@@ -17,221 +17,7 @@
         return date.toLocaleDateString('en-US', options);
     }
 
-    let spaces = [
-        {
-            name: "Tasks",
-            content: {
-                "type": "doc",
-                "content": [
-                    {
-                        "type": "heading",
-                        "attrs": {
-                            "textAlign": null,
-                            "level": 1
-                        },
-                        "content": [
-                            {
-                                "type": "text",
-                                "text": "50 types of washing machines"
-                            }
-                        ]
-                    },
-                    {
-                        "type": "paragraph",
-                        "attrs": {
-                            "textAlign": null
-                        },
-                        "content": [
-                            {
-                                "type": "text",
-                                "text": "Here're 50 useful machines"
-                            }
-                        ]
-                    },
-                    {
-                        "type": "bulletList",
-                        "content": [
-                            {
-                                "type": "listItem",
-                                "content": [
-                                    {
-                                        "type": "paragraph",
-                                        "attrs": {
-                                            "textAlign": null
-                                        },
-                                        "content": [
-                                            {
-                                                "type": "text",
-                                                "text": "The big one"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "listItem",
-                                "content": [
-                                    {
-                                        "type": "paragraph",
-                                        "attrs": {
-                                            "textAlign": null
-                                        },
-                                        "content": [
-                                            {
-                                                "type": "text",
-                                                "text": "The smaller one"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "listItem",
-                                "content": [
-                                    {
-                                        "type": "paragraph",
-                                        "attrs": {
-                                            "textAlign": null
-                                        },
-                                        "content": [
-                                            {
-                                                "type": "text",
-                                                "text": "The smallest one"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        {
-            name: "Sallat",
-            content: {
-                "type": "doc",
-                "content": [
-                    {
-                        "type": "paragraph",
-                        "attrs": {
-                            "textAlign": null
-                        },
-                        "content": [
-                            {
-                                "type": "text",
-                                "text": "Fix the last bug you encountered"
-                            }
-                        ]
-                    },
-                    {
-                        "type": "paragraph",
-                        "attrs": {
-                            "textAlign": null
-                        },
-                        "content": [
-                            {
-                                "type": "text",
-                                "text": "The bug could be identified by scanning the code"
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        {
-            name: "SaaS",
-            content: {
-                "type": "doc",
-                "content": [
-                    {
-                        "type": "heading",
-                        "attrs": {
-                            "textAlign": null,
-                            "level": 1
-                        },
-                        "content": [
-                            {
-                                "type": "text",
-                                "text": "We have a lot of ideas"
-                            }
-                        ]
-                    },
-                    {
-                        "type": "orderedList",
-                        "attrs": {
-                            "start": 1
-                        },
-                        "content": [
-                            {
-                                "type": "listItem",
-                                "content": [
-                                    {
-                                        "type": "paragraph",
-                                        "attrs": {
-                                            "textAlign": null
-                                        },
-                                        "content": [
-                                            {
-                                                "type": "text",
-                                                "text": "Fitness app"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "listItem",
-                                "content": [
-                                    {
-                                        "type": "paragraph",
-                                        "attrs": {
-                                            "textAlign": null
-                                        },
-                                        "content": [
-                                            {
-                                                "type": "text",
-                                                "text": "Education"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "listItem",
-                                "content": [
-                                    {
-                                        "type": "paragraph",
-                                        "attrs": {
-                                            "textAlign": null
-                                        },
-                                        "content": [
-                                            {
-                                                "type": "text",
-                                                "text": "Restaurants"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "type": "paragraph",
-                        "attrs": {
-                            "textAlign": null
-                        },
-                        "content": [
-                            {
-                                "type": "text",
-                                "text": "This should be fun"
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-    ]
+    let spaces = [];
 
     let isSidebarActive = true;
     let isNewSpaceInputActive = false;
@@ -239,6 +25,18 @@
     let editor;
 
     let spaceName = "New Space";
+
+    $: if(!spaceName) {
+        spaceName = "New Space"
+    }
+
+    const getSpaces = () => {
+        fetch("../api/space")
+        .then(res => res.json())
+        .then(json => {
+            console.log(json);
+        })
+    }
 </script>
 
 <Saving bind:show={isSaving} />
@@ -261,8 +59,10 @@
                     spaceName = space.name;
                 }} class="space fs-xs">
                     <p class="bold">{space.name}</p>
-                    <p>{space.content.content[0].content[0].text.slice(0, 20)}...</p>
+                    <p>{space.content.content[0].content[0].text.slice(0, 30)}...</p>
                 </button>
+                {:else}
+                <p>Empty</p>
             {/each}
         </div>
     </div>
@@ -271,7 +71,12 @@
             <button class:active={isSidebarActive} class="sidebar-toggle" on:click={() => {
                 isSidebarActive = !isSidebarActive;
             }}><img src="{toggleSidebarIconSrc}" alt="toggle sidebar"></button>
-            <h3>{spaceName}</h3>
+            <h3 contenteditable="" bind:textContent={spaceName} on:keydown={e => {
+                if(e.key == "Enter") {
+                    e.preventDefault()
+                    console.log("Hello");
+                }
+            }}></h3>
             <div>
                 <p>{data.email}</p>
                 <a class="button" rel="external" href="/logout">Logout</a>
@@ -282,6 +87,7 @@
                 <Editor bind:editor mentionList={spaces.map(space => space.name)} />
             </div>
         </div>
+        <button on:click={getSpaces}>Get spaces</button>
     </div>
 </main>
 
@@ -304,6 +110,10 @@
         position: sticky;
         z-index: 1;
         top: 0;
+    }
+
+    .top h3 {
+        padding-inline: 1rem;
     }
 
     .top > div {
