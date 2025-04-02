@@ -1,129 +1,15 @@
 <script>
     import toggleSidebarIconSrc from "$lib/assets/icons/toggle-sidebar-icon.svg";
     import addIconSrc from "$lib/assets/icons/add-icon.svg";
-    import FolderModal from '$lib/components/FolderModal.svelte';
     import Saving from '$lib/components/Saving.svelte';
-    import { onMount } from 'svelte';
     import { fly } from "svelte/transition";
     import Editor from "$lib/components/Editor.svelte";
-
-    // export let data;
 
     let data = {
         "email": "zain@gmail.com"
     }
 
-    const createNote = () => {
-        isSaving = true;
-        if(!folders.length) {
-            isSaving = false;
-            alert("You must have at least one folder");
-            return;
-        }
-        const newNote = { content: noteInput };
-        fetch("../api/note", {
-            method: "POST",
-            body: JSON.stringify(newNote),
-            headers: {"Content-Type": "application/json"}
-        })
-        .then(res => res.json())
-        .then(json => {
-            isSaving = false;
-            console.log(json);
-            if(json.newFolder) {
-                newNote.noteID = json.noteID;
-                newNote.folderID = json.newFolder.folderID;
-                notes.push(newNote);
-                notes = notes;
-                noteInput = "";
-                folders = [...folders, json.newFolder];
-                lightUpFolder(json.newFolder.folderID);
-            }
-
-            else {
-                newNote.noteID = json.noteID;
-                newNote.folderID = json.selectedFolderID;
-                notes.push(newNote);
-                notes = notes;
-                noteInput = "";
-                lightUpFolder(json.selectedFolderID);
-            }
-        })
-    }
-    
-    const createFolder = () => {
-        isSaving = true;
-        const newFolder = { name: folderInput };
-        fetch("../api/folder", {
-            method: "POST",
-            body: JSON.stringify(newFolder),
-            headers: {"Content-Type": "application/json"}
-        })
-        .then(res => res.json())
-        .then(json => {
-            isSaving = false;
-            console.log(json);
-            newFolder.folderID = json.folderID;
-            folders = [...folders, newFolder];
-            folderInput = "";
-        })
-    }
-
-    const deleteNote = (noteID) => {
-        isSaving = true;
-        fetch("../api/note", {
-            method: "DELETE",
-            body: JSON.stringify({ noteID }),
-            headers: {"Content-Type": "application/json"}
-        })
-        .then(res => res.json())
-        .then(json => {
-            isSaving = false;
-            console.log(json);
-            notes = notes.filter(note => note.noteID != noteID);
-        })
-    }
-
-    const deleteFolder = (folderID) => {
-        isSaving = true;
-        fetch("../api/folder", {
-            method: "DELETE",
-            body: JSON.stringify({ folderID }),
-            headers: {"Content-Type": "application/json"}
-        })
-        .then(res => res.json())
-        .then(json => {
-            isSaving = false;
-            console.log(json);
-            folders = folders.filter(folder => folder.folderID != folderID);
-            notes = notes.filter(note => note.folderID != folderID);
-        })
-    }
-
     let isSaving = false;
-
-    const sendSuggestion = () => {
-        isSaving = true;
-        fetch("../api/suggestion", {
-            method: "POST",
-            body: JSON.stringify({ content: suggestionInput }),
-            headers: {"Content-Type": "application/json"}
-        })
-        .then(res => res.json())
-        .then(json => {
-            isSaving = false;
-            console.log(json);
-            suggestionInput = "";
-        })
-    }
-
-    const lightUpFolder = (folderID) => {
-        folders.find(folder => folder.folderID == folderID).lightup = true;
-        setTimeout(() => {
-            folders.find(folder => folder.folderID == folderID).lightup = false;
-            folders = folders;
-        }, 750);
-    }
 
     const formatDate = (ms) => {
         const date = new Date(ms);
@@ -131,7 +17,7 @@
         return date.toLocaleDateString('en-US', options);
     }
 
-    let folders = [
+    let spaces = [
         {
             name: "Tasks",
             content: {
@@ -348,9 +234,11 @@
     ]
 
     let isSidebarActive = true;
-    let isNewFolderInputActive = false;
+    let isNewSpaceInputActive = false;
 
     let editor;
+
+    let spaceName = "New Space";
 </script>
 
 <Saving bind:show={isSaving} />
@@ -359,18 +247,21 @@
     <div class="sidebar" class:active={isSidebarActive}>
         <div class="controls">
             <div>
-                <h3>Folders</h3>
-                <button on:click={() => isNewFolderInputActive = !isNewFolderInputActive}><img src="{addIconSrc}" alt="add"></button>
+                <h3>My Spaces</h3>
+                <button on:click={() => isNewSpaceInputActive = !isNewSpaceInputActive}><img src="{addIconSrc}" alt="add"></button>
             </div>
-            {#if isNewFolderInputActive}
-            <input transition:fly={{ y: -100, duration: 200 }} type="text" placeholder="New folder name">
+            {#if isNewSpaceInputActive}
+            <input transition:fly={{ y: -100, duration: 200 }} type="text" placeholder="New space name">
             {/if}
         </div>
-        <div class="folders">
-            {#each folders as folder}
-                <button on:click={() => editor.commands.setContent(folder.content)} class="folder fs-xs">
-                    <p class="bold">{folder.name}</p>
-                    <p>{folder.content.content[0].content[0].text.slice(0, 20)}...</p>
+        <div class="spaces">
+            {#each spaces as space}
+                <button on:click={() => {
+                    editor.commands.setContent(space.content)
+                    spaceName = space.name;
+                }} class="space fs-xs">
+                    <p class="bold">{space.name}</p>
+                    <p>{space.content.content[0].content[0].text.slice(0, 20)}...</p>
                 </button>
             {/each}
         </div>
@@ -380,7 +271,7 @@
             <button class:active={isSidebarActive} class="sidebar-toggle" on:click={() => {
                 isSidebarActive = !isSidebarActive;
             }}><img src="{toggleSidebarIconSrc}" alt="toggle sidebar"></button>
-            <h3>Note organizer</h3>
+            <h3>{spaceName}</h3>
             <div>
                 <p>{data.email}</p>
                 <a class="button" rel="external" href="/logout">Logout</a>
@@ -388,7 +279,7 @@
         </div>
         <div class="editor-container">
             <div class="editor">
-                <Editor bind:editor mentionList={folders.map(folder => folder.name)} />
+                <Editor bind:editor mentionList={spaces.map(space => space.name)} />
             </div>
         </div>
     </div>
@@ -455,11 +346,13 @@
         overflow-x: hidden;
         overflow-y: auto;
         max-width: 0;
+        translate: -500% 0;
         opacity: 0;
     }
 
     .sidebar.active {
         opacity: 1;
+        translate: 0 0;
         padding-inline: .5rem;
         max-width: 200px;
     }
@@ -480,15 +373,15 @@
         gap: .5rem;
     }
 
-    .folders {
+    .spaces {
         margin-block-start: .5rem;
     }
 
-    button.folder {
+    button.space {
         text-align: start;
     }
 
-    button.folder:not(:last-of-type) {
+    button.space:not(:last-of-type) {
         margin-bottom: .5rem;
     }
 
