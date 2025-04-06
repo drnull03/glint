@@ -1,15 +1,75 @@
 import { supabase } from "$lib/supabaseClient";
 import { json } from "@sveltejs/kit";
+import { SECRET_JWT_KEY } from "$env/static/private";
+import jwt from '@tsndr/cloudflare-worker-jwt';
+import { redirect } from "@sveltejs/kit";
 
-export const GET = async () => {
+export const GET = async ({ cookies }) => {
+    const token = cookies.get("token");
+    if(!token) {
+        throw redirect(302, "/login");
+    }
+    
+    const verifiedToken = await jwt.verify(token, SECRET_JWT_KEY);
+    const userData = verifiedToken.payload;
+    const userID = userData.userID;
+
+    if (!userID) {
+        return new Response(JSON.stringify({ error: 'userID is required' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' },
+        });
+    }
+
     const { data, error } = await supabase
     .from("glint_space")
     .select("*")
-    .eq("userID", 1);
+    .eq("userID", userID)
+    .order("created_at");
 
     if(error) {
         return json({ status: false, message: "Couldn't get spaces" });
     }
 
     return json({ status: true, data });
+}
+
+export const POST = async ({ cookies, request }) => {
+    const token = cookies.get("token");
+    if(!token) {
+        throw redirect(302, "/login");
+    }
+    
+    const verifiedToken = await jwt.verify(token, SECRET_JWT_KEY);
+    const userData = verifiedToken.payload;
+    const userID = userData.userID;
+
+    if (!userID) {
+        return new Response(JSON.stringify({ error: 'userID is required' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' },
+        });
+    }
+
+    const { name, content } = await request.json();
+
+    const { data, error } = content ? await supabase
+    .from('glint_space')
+    .insert([
+        { name, userID, content }
+    ])
+    .select("spaceID") : await supabase
+    .from('glint_space')
+    .insert([
+        { name, userID }
+    ])
+    .select("spaceID");
+
+
+    if(error) {
+        return json({ status: false, message: "Couldn't create this space" });
+    }
+
+    return json({ status: true, data: data[0] });
+    
 }

@@ -5,9 +5,7 @@
     import { fly } from "svelte/transition";
     import Editor from "$lib/components/Editor.svelte";
 
-    let data = {
-        "email": "zain@gmail.com"
-    }
+    export let data;
 
     let isSaving = false;
 
@@ -17,29 +15,113 @@
         return date.toLocaleDateString('en-US', options);
     }
 
-    let spaces = [];
+    let { spaces } = data;
 
-    let isSidebarActive = true;
+    let isSidebarActive = false;
     let isNewSpaceInputActive = false;
 
     let editor;
 
-    let spaceName = "New Space";
+    let spaceName;
+    let newSpaceName;
 
-    $: if(!spaceName) {
-        spaceName = "New Space"
-    }
+    let activeSpaceID;
 
     const getSpaces = () => {
         fetch("../api/space")
         .then(res => res.json())
         .then(json => {
             console.log(json);
+            spaces = json.data;
         })
     }
+
+    const createSpace = () => {
+        if(!newSpaceName) {
+            alert("Please choose a name for your new Space");
+            return;
+        }
+        isSaving = true;
+        fetch("../api/space", {
+            method: "POST",
+            body: JSON.stringify({
+                name: newSpaceName
+            }),
+            headers: {"Content-Type": "applcation/json"}
+        })
+        .then(res => res.json())
+        .then(json => {
+            isSaving = false;
+            console.log(json);
+            spaces.push({
+                spaceID: json.data.spaceID,
+                name: newSpaceName,
+                created_at: new Date().getTime(),
+                content: ""
+            });
+            spaces = spaces;
+            newSpaceName = "";
+            isNewSpaceInputActive = false;
+            activeSpaceID = json.data.spaceID;
+        })
+    }
+
+    const handleActiveSpaceChange = () => {
+        console.log("Outer");
+        if(editor) {
+            console.log("Inner");
+            editor.commands.setContent(spaces.find(s => s.spaceID == activeSpaceID).content);
+        }
+    }
+
+    // const handleActiveSpaceClear = () => {
+    //     console.log("Clearing editor");
+    //     if(editor) {
+    //         editor.commands.clearContent();
+    //     }
+    // }
+
+    $: if(activeSpaceID) {
+        handleActiveSpaceChange();
+    } else {
+        // handleActiveSpaceClear();
+    }
+
+    const updateSpace = () => {
+        isSaving = true;
+        fetch("../api/space/update", {
+            method: "PATCH",
+            body: JSON.stringify({
+                content: editor.getJSON(),
+                spaceID: activeSpaceID
+            }),
+            headers: {"Content-Type": "applcation/json"}
+        })
+        .then(res => res.json())
+        .then(json => {
+            isSaving = false;
+            console.log(json);
+        })
+    }
+
+    let debounceTimer;
+    
+    const adjustScrollForCaret = (padding = 400) => {
+        const sel = document.getSelection();
+        if (!sel.rangeCount) return;
+
+        const range = sel.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        const distanceFromBottom = window.innerHeight - rect.bottom;
+
+        if (distanceFromBottom < padding) {
+            const offset = padding - distanceFromBottom;
+            window.scrollBy({ top: offset, behavior: "smooth" });
+        }
+    };
 </script>
 
-<Saving bind:show={isSaving} />
+<Saving bind:show={isSaving} text={"Processing..."} />
 
 <main class="fs-300">
     <div class="sidebar" class:active={isSidebarActive}>
@@ -49,17 +131,17 @@
                 <button on:click={() => isNewSpaceInputActive = !isNewSpaceInputActive}><img src="{addIconSrc}" alt="add"></button>
             </div>
             {#if isNewSpaceInputActive}
-            <input transition:fly={{ y: -100, duration: 200 }} type="text" placeholder="New space name">
+            <input bind:value={newSpaceName} on:keydown={e => {
+                if(e.key == "Enter") {
+                    createSpace();
+                }
+            }} transition:fly={{ y: -100, duration: 200 }} type="text" placeholder="New space name">
             {/if}
         </div>
         <div class="spaces">
             {#each spaces as space}
-                <button on:click={() => {
-                    editor.commands.setContent(space.content)
-                    spaceName = space.name;
-                }} class="space fs-xs">
+                <button on:click={() => activeSpaceID = space.spaceID} class="space fs-xs">
                     <p class="bold">{space.name}</p>
-                    <p>{space.content.content[0].content[0].text.slice(0, 30)}...</p>
                 </button>
                 {:else}
                 <p>Empty</p>
@@ -71,23 +153,38 @@
             <button class:active={isSidebarActive} class="sidebar-toggle" on:click={() => {
                 isSidebarActive = !isSidebarActive;
             }}><img src="{toggleSidebarIconSrc}" alt="toggle sidebar"></button>
-            <h3 contenteditable="" bind:textContent={spaceName} on:keydown={e => {
-                if(e.key == "Enter") {
-                    e.preventDefault()
-                    console.log("Hello");
-                }
-            }}></h3>
+            <!-- Bind the input below to the name of the active space ID -->
+            <!-- <input type="text" placeholder="Space name..."> -->
+            <p class="bold">{spaces.find(s => s.spaceID == activeSpaceID)?.name || "No space is selected"}</p>
             <div>
                 <p>{data.email}</p>
                 <a class="button" rel="external" href="/logout">Logout</a>
             </div>
         </div>
+        {#if activeSpaceID}
         <div class="editor-container">
             <div class="editor">
-                <Editor bind:editor mentionList={spaces.map(space => space.name)} />
+                <Editor onupdate={() => {
+                    console.log("UPDATING");
+                    if(activeSpaceID) {
+                        spaces.find(s => s.spaceID == activeSpaceID).content = !editor.isEmpty ? editor.getJSON() : "";
+                        spaces = spaces;
+    
+                        clearTimeout(debounceTimer);
+                        debounceTimer = setTimeout(() => {
+                            updateSpace();
+                        }, 1000);
+                    }
+                    adjustScrollForCaret();
+                }} initContent={spaces.find(s => s.spaceID == activeSpaceID).content || ""} bind:editor mentionList={spaces.map(space => space.name)} />
             </div>
+        </div> 
+        {:else}
+        <div class="no-selected-space">
+        <p>There's no selected Space, Select a Space or create a new one</p>
+        <button on:click={() => isSidebarActive = true}>Open side bar</button>
         </div>
-        <button on:click={getSpaces}>Get spaces</button>
+        {/if}
     </div>
 </main>
 
@@ -112,14 +209,19 @@
         top: 0;
     }
 
-    .top h3 {
-        padding-inline: 1rem;
-    }
-
     .top > div {
         display: flex;
         gap: 1rem;
         align-items: center;
+    }
+    
+    .no-selected-space {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
     }
 
     .sidebar-toggle {
@@ -147,7 +249,6 @@
         top: 0;
         height: 100vh;
         height: 100svh;
-        /* border: 1px solid red; */
         border-right: 1px solid #a1a1a166;
         padding-bottom: .5rem;
 
@@ -197,6 +298,8 @@
 
     .editor-container {
         padding: .5rem;
+        padding-top: 5rem;
+        padding-bottom: 15rem;
     }
 
     .editor {

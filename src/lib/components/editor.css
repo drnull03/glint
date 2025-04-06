@@ -1,11 +1,12 @@
 .tiptap {
     background-color: black;
     color: #a1a1a1 !important;
-    padding: 1rem;
+    /* padding: 1rem; */
 }
 
 .tipex-editor-section .ProseMirror {
-    padding: 1rem;
+    /* padding: 1rem; */
+    padding: 0;
 }
 
 .tipex-editor-section .ProseMirror h1 {
@@ -106,4 +107,45 @@
 
 .tiptap ul[data-type="taskList"] ul[data-type="taskList"] {
     margin: 0;
+}
+
+code {
+    background-color: #1e1e1e !important;
+    color: #d4d4d4 !important;
+    font-family: "Fira Code", monospace;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.95em;
+}
+
+pre {
+    background-color: #1e1e1e !important;
+    color: #d4d4d4 !important;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: .8em;
+    line-height: 1.5;
+    border: 1px solid #333;
+}
+
+pre code {
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    font-size: 1em;
+}
+
+pre::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+pre::-webkit-scrollbar-thumb {
+    background: #444 !important;
+    border-radius: 4px;
+}
+
+pre::-webkit-scrollbar-track {
+    background: #222 !important;
 }

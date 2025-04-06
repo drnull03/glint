@@ -4,7 +4,9 @@
     import TaskList from "@tiptap/extension-task-list";
     import TaskItem from "@tiptap/extension-task-item";
     import Mention from "@tiptap/extension-mention";
+    import { Markdown } from "tiptap-markdown";
     import tippy from "tippy.js";
+    import { onMount } from "svelte";
 
     import "@friendofsvelte/tipex/styles/ProseMirror.css";
 
@@ -13,6 +15,16 @@
     export let editor;
 
     export let mentionList = ["Tasks", "Sallat", "Get more sales"];
+
+    export let onupdate = () => {};
+
+    export let initContent;
+
+    onMount(() => {
+        if(initContent) {
+            editor.commands.setContent(initContent);
+        }
+    })
 
     const suggestion = {
         char: "@",
@@ -123,8 +135,12 @@
         }),
         TaskList.configure({
             itemTypeName: 'taskItem',
+        }),
+        Markdown.configure({
+            transformPastedText: true,
+            // The one below might be problematic
+            linkify: true
         })
-
     ];
 </script>
 
@@ -133,5 +149,6 @@
     bind:tipex={editor}
     class="editor"
     floating
+    bind:onupdate
 >
 </Tipex>
