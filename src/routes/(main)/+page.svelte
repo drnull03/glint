@@ -4,6 +4,7 @@
     import Saving from '$lib/components/Saving.svelte';
     import { fly } from "svelte/transition";
     import Editor from "$lib/components/Editor.svelte";
+    import Modal from "$lib/components/Modal.svelte";
 
     export let data;
 
@@ -152,6 +153,8 @@
         })
     }
 
+    let showDeleteModal = false;
+
     const deleteSpace = () => {
         isSaving = true;
         fetch("../api/space", {
@@ -169,6 +172,7 @@
             
             spaces = spaces.filter(s => s.spaceID != activeSpaceID);
             activeSpaceID = null;
+            showDeleteModal = false;
         })
     }
 </script>
@@ -214,6 +218,7 @@
             </div>
         </div>
         {#if activeSpaceID}
+        <Modal bind:show={showDeleteModal} title={"Delete Space?"} content={"This Space will be deleted forever, are you sure?"} acceptBtnContent={"Delete"} declineBtnContent={"Cancel"} acceptFunction={deleteSpace} />
         <div class="editor-container">
             <div class="editor">
                 <Editor onupdate={() => {
@@ -233,7 +238,7 @@
         </div> 
         <div class="space-controls fs-xs">
             <p>{formatDate(spaces.find(s => s.spaceID == activeSpaceID).created_at)}</p>
-            <button on:click={deleteSpace}>Delete</button>
+            <button on:click={() => showDeleteModal = true}>Delete</button>
             {#if !showTeamMembers}
             <button on:click={() => showTeamMembers = true}>Forward</button>
             {:else}
