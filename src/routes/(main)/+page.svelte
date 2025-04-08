@@ -119,6 +119,58 @@
             window.scrollBy({ top: offset, behavior: "smooth" });
         }
     };
+
+    let showTeamMembers = false;
+
+    const getTeamMembers = async () => {
+        const teamRes = await fetch("../api/team/members");
+        const teamJSON = await teamRes.json();
+
+        console.log(teamJSON);
+
+        if(!teamJSON.status) {
+            return [];
+        }
+
+        return teamJSON.data;
+    }
+
+    const forwardSpace = userID => {
+        isSaving = true;
+        fetch("../api/team/forward", {
+            method: "POST",
+            body: JSON.stringify({
+                userID, spaceID: activeSpaceID
+            }),
+            headers: {"Content-Type": "applcation/json"}
+        })
+        .then(res => res.json())
+        .then(json => {
+            isSaving = false;
+            console.log(json);
+            showTeamMembers = false;
+        })
+    }
+
+    const deleteSpace = () => {
+        isSaving = true;
+        fetch("../api/space", {
+            method: "DELETE",
+            body: JSON.stringify({ spaceID: activeSpaceID }),
+            headers: {"Content-Type": "applcation/json"}
+        })
+        .then(res => res.json())
+        .then(json => {
+            isSaving = false;
+            console.log(json);
+            if(!json.status) {
+                return;
+            }
+            
+            spaces = spaces.filter(s => s.spaceID != activeSpaceID);
+            activeSpaceID = null;
+        })
+    }
 </script>
 
 <Saving bind:show={isSaving} text={"Processing..."} />
@@ -179,10 +231,31 @@
                 }} initContent={spaces.find(s => s.spaceID == activeSpaceID).content || ""} bind:editor mentionList={spaces.map(space => space.name)} />
             </div>
         </div> 
+        <div class="space-controls fs-xs">
+            <p>{formatDate(spaces.find(s => s.spaceID == activeSpaceID).created_at)}</p>
+            <button on:click={deleteSpace}>Delete</button>
+            {#if !showTeamMembers}
+            <button on:click={() => showTeamMembers = true}>Forward</button>
+            {:else}
+            {#await getTeamMembers()}
+            <p>Getting team members...</p>
+            {:then members}
+            {#each members as member}
+                <button on:click={() => forwardSpace(member.userID)}>Send to {member.name}</button>
+            {:else}
+                <p>No team members available</p>
+            {/each}
+            {:catch error}
+                <p>Couldn't load teams, try again later</p>
+            {/await}
+            {/if}
+        </div>
         {:else}
         <div class="no-selected-space">
         <p>There's no selected Space, Select a Space or create a new one</p>
+        {#if !isSidebarActive}
         <button on:click={() => isSidebarActive = true}>Open side bar</button>
+        {/if}
         </div>
         {/if}
     </div>
@@ -302,9 +375,14 @@
         padding-bottom: 15rem;
     }
 
-    .editor {
+    .editor,
+    .space-controls {
         max-width: 700px;
         margin-inline: auto;
+    }
+
+    .space-controls {
+        padding-bottom: 2rem;
     }
 
     /* h4.error {

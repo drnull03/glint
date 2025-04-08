@@ -14,7 +14,7 @@
 
     export let editor;
 
-    export let mentionList = ["Tasks", "Sallat", "Get more sales"];
+    export let mentionList = ["These", "Are", "Placeholders"];
 
     export let onupdate = () => {};
 
