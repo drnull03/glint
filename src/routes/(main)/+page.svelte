@@ -196,8 +196,11 @@
         </div>
         <div class="spaces">
             {#each spaces as space}
-                <button on:click={() => activeSpaceID = space.spaceID} class="space fs-xs">
-                    <p class="bold">{space.name}</p>
+            <button on:click={() => activeSpaceID = space.spaceID} class="space fs-xs">
+                <p class="bold">{space.name}</p>
+                {#if space.forwarded}
+                    <p>Forwarded by {space.forwarded}</p>
+                {/if}
                 </button>
                 {:else}
                 <p>Empty</p>
@@ -253,6 +256,7 @@
             {:catch error}
                 <p>Couldn't load teams, try again later</p>
             {/await}
+            <button on:click={() => showTeamMembers = false}>Cancel</button>
             {/if}
         </div>
         {:else}

@@ -31,12 +31,21 @@ export const POST = async ({ cookies, request }) => {
 
     if (fetchError) throw fetchError;
 
+    const { data: userNameData, error: userNameError } = await supabase
+    .from('glint_user')
+    .select("name")
+    .eq('userID', userID)
+    .single();
+
+    if(userNameError) throw userNameError;
+
     const { data: newSpace, error: createError } = await supabase
     .from('glint_space')
     .insert([{
         name: originalSpace.name,
         content: originalSpace.content,
-        userID: destinationUserID
+        userID: destinationUserID,
+        forwarded: userNameData.name
     }])
 
     if(createError) {
