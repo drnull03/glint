@@ -51,12 +51,12 @@ export const POST = async ({ cookies, request }) => {
         });
     }
 
-    const { name, content } = await request.json();
+    const { name, content, forwarded } = await request.json();
 
     const { data, error } = content ? await supabase
     .from('glint_space')
     .insert([
-        { name, userID, content }
+        { name, userID, content, forwarded }
     ])
     .select("spaceID") : await supabase
     .from('glint_space')

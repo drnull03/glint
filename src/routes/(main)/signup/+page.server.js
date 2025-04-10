@@ -64,7 +64,8 @@ export const actions = {
             body: JSON.stringify({
                 userID,
                 content: onboardingSpaceContent,
-                name: "Onboarding 🎉"
+                name: "Onboarding 🎉",
+                forwarded: "Glint's team"
             }),
             headers: {"Content-Type": "application/json"}
         });
