@@ -198,6 +198,10 @@
     }
 </script>
 
+<svelte:head>
+    <title>Glint | Home</title>
+</svelte:head>
+
 <Saving bind:show={isSaving} text={"Processing..."} />
 
 <main class="fs-300">
@@ -264,7 +268,7 @@
             <p>{formatDate(spaces.find(s => s.spaceID == activeSpaceID).created_at)}</p>
             <button on:click={() => showDeleteModal = true}>Delete</button>
             {#if spaces.find(s => s.spaceID == activeSpaceID).sharedURL}
-                <p>Shared Space URL: <a href="/shared/{spaces.find(s => s.spaceID == activeSpaceID).sharedURL}">{spaces.find(s => s.spaceID == activeSpaceID).sharedURL}</a></p>
+                <p>Shared Space URL: <a href="/shared/{spaces.find(s => s.spaceID == activeSpaceID).sharedURL}" target="_blank">{spaces.find(s => s.spaceID == activeSpaceID).sharedURL}</a></p>
             {:else}
             <button on:click={shareSpace}>Share</button>
             {/if}

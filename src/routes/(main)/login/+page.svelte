@@ -8,6 +8,10 @@
     let showLoading = false;
 </script>
 
+<svelte:head>
+    <title>Login | Glint</title>
+</svelte:head>
+
 <main>
     <form action="?/login" method="post" use:enhance={() => {
         showLoading = true;
