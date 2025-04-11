@@ -96,8 +96,7 @@
             method: "PATCH",
             body: JSON.stringify({
                 content: editor.getJSON(),
-                spaceID: activeSpaceID,
-                alignRight: spaces.find(s => s.spaceID == activeSpaceID).alignRight
+                spaceID: activeSpaceID
             }),
             headers: {"Content-Type": "applcation/json"}
         })
@@ -233,11 +232,6 @@
                     if(activeSpaceID) {
                         const activeSpace = spaces.find(s => s.spaceID == activeSpaceID);
                         activeSpace.content = !editor.isEmpty ? editor.getJSON() : "";
-                        if(editorAlignment == "right") {
-                            activeSpace.alignRight = true;
-                        } else {
-                            activeSpace.alignRight = false;
-                        }
                         spaces = spaces;
     
                         clearTimeout(debounceTimer);
