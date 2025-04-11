@@ -23,6 +23,8 @@
 
     let editor;
 
+    let editorAlignment = "left";
+
     let spaceName;
     let newSpaceName;
 
@@ -94,7 +96,8 @@
             method: "PATCH",
             body: JSON.stringify({
                 content: editor.getJSON(),
-                spaceID: activeSpaceID
+                spaceID: activeSpaceID,
+                alignRight: spaces.find(s => s.spaceID == activeSpaceID).alignRight
             }),
             headers: {"Content-Type": "applcation/json"}
         })
@@ -175,6 +178,8 @@
             showDeleteModal = false;
         })
     }
+
+    $: console.log(editorAlignment);
 </script>
 
 <Saving bind:show={isSaving} text={"Processing..."} />
@@ -223,11 +228,16 @@
         {#if activeSpaceID}
         <Modal bind:show={showDeleteModal} title={"Delete Space?"} content={"This Space will be deleted forever, are you sure?"} acceptBtnContent={"Delete"} declineBtnContent={"Cancel"} acceptFunction={deleteSpace} />
         <div class="editor-container">
-            <div class="editor">
+            <div class="editor" dir="{editorAlignment == "left" ? "ltr" : "rtl"}">
                 <Editor onupdate={() => {
-                    console.log("UPDATING");
                     if(activeSpaceID) {
-                        spaces.find(s => s.spaceID == activeSpaceID).content = !editor.isEmpty ? editor.getJSON() : "";
+                        const activeSpace = spaces.find(s => s.spaceID == activeSpaceID);
+                        activeSpace.content = !editor.isEmpty ? editor.getJSON() : "";
+                        if(editorAlignment == "right") {
+                            activeSpace.alignRight = true;
+                        } else {
+                            activeSpace.alignRight = false;
+                        }
                         spaces = spaces;
     
                         clearTimeout(debounceTimer);
@@ -236,7 +246,7 @@
                         }, 1000);
                     }
                     adjustScrollForCaret();
-                }} initContent={spaces.find(s => s.spaceID == activeSpaceID).content || ""} bind:editor mentionList={spaces.map(space => space.name)} />
+                }} initContent={spaces.find(s => s.spaceID == activeSpaceID).content || ""} bind:editor mentionList={spaces.map(space => space.name)} bind:alignment={editorAlignment} />
             </div>
         </div> 
         <div class="space-controls fs-xs">

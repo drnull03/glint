@@ -149,3 +149,14 @@ pre::-webkit-scrollbar-thumb {
 pre::-webkit-scrollbar-track {
     background: #222 !important;
 }
+
+[dir="ltr"] .is-empty::before {
+    text-align: left !important;
+    left: 0 !important;
+    right: auto !important;
+}
+
+[dir="rtl"] .tipex-editor-section .ProseMirror .is-empty::before {
+    float: right;
+    content: "اكتب هنا ..."
+}
