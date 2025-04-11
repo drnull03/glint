@@ -96,7 +96,8 @@
             method: "PATCH",
             body: JSON.stringify({
                 content: editor.getJSON(),
-                spaceID: activeSpaceID
+                spaceID: activeSpaceID,
+                alignRight: editorAlignment == "right" ? true : false
             }),
             headers: {"Content-Type": "applcation/json"}
         })

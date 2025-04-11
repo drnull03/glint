@@ -21,10 +21,10 @@ export const PATCH = async ({ cookies, request }) => {
         });
     }
 
-    const { spaceID, content } = await request.json();
+    const { spaceID, content, alignRight } = await request.json();
     const { error } = await supabase
     .from('glint_space')
-    .update({ content })
+    .update({ content, alignRight })
     .eq('spaceID', spaceID)
     .eq('userID', userID)
 

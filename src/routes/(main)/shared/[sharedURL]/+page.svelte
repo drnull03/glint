@@ -3,7 +3,6 @@
     import { onMount } from 'svelte';
 
     export let data;
-    console.log(data);
 
     const { spaceData, userData } = data;
 
@@ -27,7 +26,7 @@
         </div>
         <p>Shared Space by {userData.name}</p>
     </div>
-    <div class="editor">
+    <div class="editor" dir="{spaceData.alignRight ? "rtl" : "ltr"}">
         <Editor initContent={spaceData.content || ""} bind:editor />
     </div>
 </main>
