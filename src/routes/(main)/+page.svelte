@@ -178,7 +178,23 @@
         })
     }
 
-    $: console.log(editorAlignment);
+    const shareSpace = () => {
+        isSaving = true;
+        fetch("../api/space/shared", {
+            method: "PATCH",
+            body: JSON.stringify({
+                spaceID: activeSpaceID
+            }),
+            headers: {"Content-Type": "applcation/json"}
+        })
+        .then(res => res.json())
+        .then(json => {
+            console.log(json);
+            isSaving = false;
+            spaces.find(s => s.spaceID == activeSpaceID).sharedURL = json.data;
+            spaces = spaces;
+        })
+    }
 </script>
 
 <Saving bind:show={isSaving} text={"Processing..."} />
@@ -246,6 +262,11 @@
         <div class="space-controls fs-xs">
             <p>{formatDate(spaces.find(s => s.spaceID == activeSpaceID).created_at)}</p>
             <button on:click={() => showDeleteModal = true}>Delete</button>
+            {#if spaces.find(s => s.spaceID == activeSpaceID).sharedURL}
+                <p>Shared Space URL: <a href="/shared/{spaces.find(s => s.spaceID == activeSpaceID).sharedURL}">{spaces.find(s => s.spaceID == activeSpaceID).sharedURL}</a></p>
+            {:else}
+            <button on:click={shareSpace}>Share</button>
+            {/if}
             {#if !showTeamMembers}
             <button on:click={() => showTeamMembers = true}>Forward</button>
             {:else}
