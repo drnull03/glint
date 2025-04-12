@@ -1,15 +1,11 @@
 <script>
     import Editor from '$lib/components/Editor.svelte';
-    import { onMount } from 'svelte';
 
     export let data;
 
     const { spaceData, userData } = data;
 
     let editor;
-    onMount(() => {
-        editor.setEditable(false);
-    })
     
     const formatDate = (ms) => {
         const date = new Date(ms);
@@ -36,7 +32,7 @@
     </div>
     <div class="editor" dir="{spaceData?.alignRight ? "rtl" : "ltr"}">
     {#if spaceData}
-        <Editor initContent={spaceData.content || ""} bind:editor />
+        <Editor readOnly initContent={spaceData.content || ""} bind:editor />
     {:else}
     <div class="space-not-found">
         <h3>Error 404 | Space not found</h3>

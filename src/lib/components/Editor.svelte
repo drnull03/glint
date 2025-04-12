@@ -17,10 +17,15 @@
     export let onupdate = () => {};
     export let initContent;
     export let alignment = "left";
+    export let readOnly = false;
 
     onMount(() => {
         if(initContent) {
             editor.commands.setContent(initContent);
+        }
+        
+        if(readOnly) {
+            editor.setEditable(false);
         }
     });
 
