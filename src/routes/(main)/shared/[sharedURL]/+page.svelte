@@ -81,8 +81,8 @@
         <div class="sidebar fs-xs">
             <p class="bold">Export</p>
             <div class="export-options">
-                <button on:click={() => downloadFile(`${spaceData.name}.html`, editor.getHTML(), "text/html")}>HTML</button>
-                <button on:click={() => downloadFile(`${spaceData.name}.md`, editor.storage.markdown.getMarkdown(), "text/markdown")}>Markdown</button>
+                <button on:click={() => downloadFile(`${spaceData.name}-Glint-Space.html`, editor.getHTML(), "text/html")}>HTML</button>
+                <button on:click={() => downloadFile(`${spaceData.name}-Glint-Space.md`, editor.storage.markdown.getMarkdown(), "text/markdown")}>Markdown</button>
                 <button on:click={copyToAccount}>Copy to my account</button>
             </div>
         </div>
