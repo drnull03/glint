@@ -395,14 +395,9 @@
 
     .spaces {
         margin-block-start: .5rem;
-    }
-
-    button.space {
-        text-align: start;
-    }
-
-    button.space:not(:last-of-type) {
-        margin-bottom: .5rem;
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
     }
 
     .editor-container {
