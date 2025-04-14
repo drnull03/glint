@@ -150,13 +150,18 @@ pre::-webkit-scrollbar-track {
     background: #222 !important;
 }
 
-[dir="ltr"] .is-empty::before {
+.is-empty::before {
     text-align: left !important;
     left: 0 !important;
     right: auto !important;
 }
 
-[dir="rtl"] .tipex-editor-section .ProseMirror .is-empty::before {
+.tipex-editor-section:has(p[style*="text-align: right"]) .ProseMirror .is-empty::before {
     float: right;
     content: "اكتب هنا ..."
+}
+
+/* This makes sure that if you use right align at least once, it changes the direction of the whole editor to the right */
+.tiptap:has(p[style*="text-align: right"]) {
+    direction: rtl;
 }

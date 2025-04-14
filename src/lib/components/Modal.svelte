@@ -1,7 +1,8 @@
 <script>
 	import { fade, fly } from "svelte/transition";
 
-    export let show = false, title = "Are you sure?",
+    export let show = false,
+    title = "Are you sure?",
     content = "Are you sure you would like to take this action?",
     acceptFunction = () => show = false,
     declineFunction = () => show = false,

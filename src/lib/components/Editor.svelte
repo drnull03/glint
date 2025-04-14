@@ -16,7 +16,6 @@
     export let mentionList = ["These", "Are", "Placeholders"];
     export let onupdate = () => {};
     export let initContent;
-    export let alignment = "left";
     export let readOnly = false;
 
     onMount(() => {
@@ -28,10 +27,6 @@
             editor.setEditable(false);
         }
     });
-
-    $: if (editor) {
-        alignment = editor.isActive("paragraph", { textAlign: "right" }) ? "right" : "left";
-    }
 
     const suggestion = {
         char: "@",

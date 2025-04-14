@@ -23,8 +23,6 @@
 
     let editor;
 
-    let editorAlignment = "left";
-
     let spaceName;
     let newSpaceName;
 
@@ -96,8 +94,7 @@
             method: "PATCH",
             body: JSON.stringify({
                 content: editor.getJSON(),
-                spaceID: activeSpaceID,
-                alignRight: editorAlignment == "right" ? true : false
+                spaceID: activeSpaceID
             }),
             headers: {"Content-Type": "applcation/json"}
         })
@@ -248,7 +245,7 @@
         {#if activeSpaceID}
         <Modal bind:show={showDeleteModal} title={"Delete Space?"} content={"This Space will be deleted forever, are you sure?"} acceptBtnContent={"Delete"} declineBtnContent={"Cancel"} acceptFunction={deleteSpace} />
         <div class="editor-container">
-            <div class="editor" dir="{editorAlignment == "left" ? "ltr" : "rtl"}">
+            <div class="editor">
                 <Editor onupdate={() => {
                     if(activeSpaceID) {
                         const activeSpace = spaces.find(s => s.spaceID == activeSpaceID);
@@ -261,7 +258,7 @@
                         }, 1000);
                     }
                     adjustScrollForCaret();
-                }} initContent={spaces.find(s => s.spaceID == activeSpaceID).content || ""} bind:editor mentionList={spaces.map(space => space.name)} bind:alignment={editorAlignment} />
+                }} initContent={spaces.find(s => s.spaceID == activeSpaceID).content || ""} bind:editor mentionList={spaces.map(space => space.name)} />
             </div>
         </div> 
         <div class="space-controls fs-xs">

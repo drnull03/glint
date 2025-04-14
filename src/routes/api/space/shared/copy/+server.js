@@ -7,7 +7,7 @@ import { redirect } from "@sveltejs/kit";
 export const POST = async ({ cookies, request }) => {
     const token = cookies.get("token");
     if(!token) {
-        throw redirect(302, "/login");
+        return json({ status: false, message: "no-token" });
     }
     
     const verifiedToken = await jwt.verify(token, SECRET_JWT_KEY);
@@ -21,37 +21,33 @@ export const POST = async ({ cookies, request }) => {
         });
     }
 
-    const { userID: destinationUserID, spaceID } = await request.json();
+    const { spaceID } = await request.json();
 
-    const { data: originalSpace, error: fetchError } = await supabase
+    const { data: spaceData, error: getSpaceError } = await supabase
     .from('glint_space')
-    .select('name, content')
+    .select('name, content, sharedURL')
     .eq('spaceID', spaceID)
     .single();
 
-    if (fetchError) throw fetchError;
+    if(getSpaceError) {
+        return json({ status: false, message: "Couldn't copy this space" });
+    }
 
-    const { data: userNameData, error: userNameError } = await supabase
-    .from('glint_user')
-    .select("name")
-    .eq('userID', userID)
-    .single();
+    if(!spaceData?.sharedURL) {
+        return json({ status: false, message: "Space is not shared publicly" });
+    }
 
-    if(userNameError) throw userNameError;
-
-    const { error: createError } = await supabase
+    const { error } = await supabase
     .from('glint_space')
     .insert([{
-        name: originalSpace.name,
-        content: originalSpace.content,
-        userID: destinationUserID,
-        forwarded: userNameData.name
+        name: spaceData.name,
+        content: spaceData.content,
+        userID
     }])
 
-    if(createError) {
-        return json({ status: false, message: "Couldn't forward this space" });
+    if(error) {
+        return json({ status: false, message: "Couldn't copy this space" });
     }
 
     return json({ status: true, data: null });
-    
 }

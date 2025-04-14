@@ -5,7 +5,7 @@ export const load = async ({ params }) => {
 
     const { data: spaceData, error: spaceError } = await supabase
     .from("glint_space")
-    .select('created_at, name, content, userID, alignRight')
+    .select('spaceID, created_at, name, content, userID')
     .eq("sharedURL", sharedURL)
     .single();
 
