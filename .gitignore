@@ -24,4 +24,5 @@ vite.config.ts.timestamp-*
 
 # Mobile
 build-mobile
+build-desktop
 android
