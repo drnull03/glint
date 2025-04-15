@@ -29,6 +29,7 @@
 		"@capacitor/core": "^7.0.1",
 		"@friendofsvelte/tipex": "^0.0.7-fix-0",
 		"@supabase/supabase-js": "^2.48.1",
+		"@tauri-apps/plugin-store": "^2.2.0",
 		"@tiptap/core": "^2.11.5",
 		"@tiptap/extension-mention": "^2.11.5",
 		"@tiptap/extension-table": "^2.11.7",

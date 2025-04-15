@@ -6,6 +6,7 @@
     import Editor from "$lib/components/Editor.svelte";
     import Modal from "$lib/components/Modal.svelte";
     import { onMount } from "svelte";
+    import { goto } from "$app/navigation";
     let isSaving = false;
     const formatDate = (ms) => {
         const date = new Date(ms);
@@ -13,11 +14,22 @@
         return date.toLocaleDateString('en-US', options);
     }
 
-    onMount(() => {
+    import { load } from "@tauri-apps/plugin-store";
+
+    onMount(async () => {
+        const store = await load('store.json', { autoSave: false })
+        const tokenStore = await store.get('token');
+        token = tokenStore?.value;
+        if(!token) {
+            goto("/login");
+        }
+        // await store.delete('token');
         getSpaces();
     })
 
-    const token = "";
+    let loadingUserData = true;
+
+    let token = "";
 
     let spaces = [];
     let isSidebarActive = false;
@@ -79,6 +91,7 @@
             console.log(json);
             spaces = json.data;
             isSaving = false;
+            loadingUserData = false;
         })
     }
 
@@ -256,7 +269,7 @@
             <p class="bold">{spaces.find(s => s.spaceID == activeSpaceID)?.name || "No space is selected"}</p>
             <div>
                 <!-- <p>{data.email}</p> -->
-                <p>{"zain@gmail.com"}</p>
+                <!-- <p>{"zain@gmail.com"}</p> -->
                 <!-- <a class="button" rel="external" href="/logout">Logout</a> -->
             </div>
         </div>
@@ -304,6 +317,10 @@
             <button on:click={() => showTeamMembers = false}>Cancel</button>
             {/if}
         </div>
+        {:else if loadingUserData}
+        <div class="loading-user-data">
+            <p>Loading your data...</p>
+        </div>
         {:else}
         <div class="no-selected-space">
         <p>There's no selected Space, Select a Space or create a new one</p>
@@ -342,7 +359,8 @@
         align-items: center;
     }
     
-    .no-selected-space {
+    .no-selected-space,
+    .loading-user-data {
         display: flex;
         flex-direction: column;
         gap: 1rem;
