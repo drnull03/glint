@@ -165,3 +165,70 @@ pre::-webkit-scrollbar-track {
 .tiptap:has(p[style*="text-align: right"]) {
     direction: rtl;
 }
+
+.tiptap table {
+    border-collapse: collapse;
+    margin: 0;
+    overflow: hidden;
+    table-layout: fixed;
+    width: 100%;
+    color: #a1a1a1;
+    background-color: #000000;
+}
+
+.tiptap table td,
+.tiptap table th {
+    border: 1px solid #333333; /* Darker gray for borders */
+    box-sizing: border-box;
+    min-width: 1em;
+    padding: 6px 8px;
+    position: relative;
+    vertical-align: top;
+    color: #a1a1a1;
+}
+
+.tiptap table td > *,
+.tiptap table th > * {
+    margin-bottom: 0;
+    color: #a1a1a1;
+}
+
+.tiptap table th {
+    background-color: #1a1a1a; /* Dark gray for header background */
+    font-weight: bold;
+    text-align: left;
+    color: #a1a1a1;
+}
+
+.tiptap table .selectedCell:after {
+    background: #333333; /* Dark gray for selected cell */
+    content: "";
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+    position: absolute;
+    z-index: 2;
+}
+
+.tiptap table .column-resize-handle {
+    background-color: #7d5bed; /* Keeping purple but you can change */
+    bottom: -2px;
+    pointer-events: none;
+    position: absolute;
+    right: -2px;
+    top: 0;
+    width: 4px;
+}
+
+.tiptap .tableWrapper {
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    background-color: #000000;
+}
+
+.tiptap.resize-cursor {
+    cursor: ew-resize;
+    cursor: col-resize;
+}

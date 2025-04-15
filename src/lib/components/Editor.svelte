@@ -5,6 +5,11 @@
     import TaskItem from "@tiptap/extension-task-item";
     import Mention from "@tiptap/extension-mention";
     import { Markdown } from "tiptap-markdown";
+    import Table from '@tiptap/extension-table'
+    import TableCell from '@tiptap/extension-table-cell'
+    import TableHeader from '@tiptap/extension-table-header'
+    import TableRow from '@tiptap/extension-table-row'
+
     import tippy from "tippy.js";
     import { onMount } from "svelte";
 
@@ -142,7 +147,13 @@
             transformPastedText: true,
             // The one below might be problematic
             linkify: true
-        })
+        }),
+        Table.configure({
+            resizable: true,
+        }),
+        TableRow,
+        TableHeader,
+        TableCell,
     ];
 </script>
 
