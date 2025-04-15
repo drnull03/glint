@@ -5,6 +5,7 @@
     import { fly } from "svelte/transition";
     import Editor from "$lib/components/Editor.svelte";
     import Modal from "$lib/components/Modal.svelte";
+    import { onMount } from "svelte";
     let isSaving = false;
     const formatDate = (ms) => {
         const date = new Date(ms);
@@ -12,17 +13,13 @@
         return date.toLocaleDateString('en-US', options);
     }
 
-    // let spaces = [];
-    let spaces = [
-        {
-            name: "Multiple Phone Numbers",
-            spaceID: 98,
-            created_at: "2025-04-15 08:29:15.140858+00",
-            userID: "1",
-            content: {"type": "doc", "content": [{"type": "heading", "attrs": {"level": 1, "textAlign": null}, "content": [{"text": "Guide to Handling Multiple Phone Numbers in PostgreSQL", "type": "text"}]}, {"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "When expanding a database to support multiple phone numbers per customer, several approaches can be considered. Below is a breakdown of common methods, followed by a detailed comparison of the two approaches specified by the user.", "type": "text"}]}, {"type": "heading", "attrs": {"level": 3, "textAlign": null}, "content": [{"text": "Common Approaches to Storing Multiple Phone Numbers", "type": "text"}]}, {"type": "table", "content": [{"type": "tableRow", "content": [{"type": "tableHeader", "attrs": {"colspan": 1, "rowspan": 1, "colwidth": null}, "content": [{"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "Approach", "type": "text", "marks": [{"type": "bold"}]}]}]}, {"type": "tableHeader", "attrs": {"colspan": 1, "rowspan": 1, "colwidth": null}, "content": [{"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "Pros", "type": "text", "marks": [{"type": "bold"}]}]}]}, {"type": "tableHeader", "attrs": {"colspan": 1, "rowspan": 1, "colwidth": null}, "content": [{"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "Cons", "type": "text", "marks": [{"type": "bold"}]}]}]}]}, {"type": "tableRow", "content": [{"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1, "colwidth": null}, "content": [{"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "1. Separate Table (Normalization)", "type": "text", "marks": [{"type": "bold"}]}]}]}, {"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1, "colwidth": null}, "content": [{"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "- Scalable; supports unlimited numbers.", "type": "text"}, {"type": "hardBreak"}, {"text": "- Enforces data integrity via foreign keys.", "type": "text"}, {"type": "hardBreak"}, {"text": "- Easy to add metadata (e.g., phone type).", "type": "text"}]}]}, {"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1, "colwidth": null}, "content": [{"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "- Requires JOINs for queries.", "type": "text"}, {"type": "hardBreak"}, {"text": "- Slightly more complex schema.", "type": "text"}]}]}]}, {"type": "tableRow", "content": [{"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1, "colwidth": null}, "content": [{"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "2. Array Column", "type": "text", "marks": [{"type": "bold"}]}]}]}, {"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1, "colwidth": null}, "content": [{"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "- Simple schema; all numbers in one column.", "type": "text"}, {"type": "hardBreak"}, {"text": "- Fast querying with array operators and GIN indexes.", "type": "text"}]}]}, {"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1, "colwidth": null}, "content": [{"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "- No built-in way to track a \"primary\" number.", "type": "text"}, {"type": "hardBreak"}, {"text": "- Limited metadata support.", "type": "text"}]}]}]}, {"type": "tableRow", "content": [{"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1, "colwidth": null}, "content": [{"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "3. JSON/B Column", "type": "text", "marks": [{"type": "bold"}]}]}]}, {"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1, "colwidth": null}, "content": [{"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "- Flexible structure for metadata.", "type": "text"}, {"type": "hardBreak"}, {"text": "- Indexable with JSONB.", "type": "text"}]}]}, {"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1, "colwidth": null}, "content": [{"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "- Complex query syntax.", "type": "text"}, {"type": "hardBreak"}, {"text": "- Overhead in parsing JSON.", "type": "text"}]}]}]}, {"type": "tableRow", "content": [{"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1, "colwidth": null}, "content": [{"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "4. Multiple Columns", "type": "text", "marks": [{"type": "bold"}]}]}]}, {"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1, "colwidth": null}, "content": [{"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "- Simple for small, fixed numbers of phones.", "type": "text"}]}]}, {"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1, "colwidth": null}, "content": [{"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "- Inflexible; poor scalability.", "type": "text"}, {"type": "hardBreak"}, {"text": "- Messy query logic.", "type": "text"}]}]}]}, {"type": "tableRow", "content": [{"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1, "colwidth": null}, "content": [{"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "5. Hybrid (Primary + Array)", "type": "text", "marks": [{"type": "bold"}]}]}]}, {"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1, "colwidth": null}, "content": [{"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "- Clear primary number.", "type": "text"}, {"type": "hardBreak"}, {"text": "- Avoids JOINs.", "type": "text"}]}]}, {"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1, "colwidth": null}, "content": [{"type": "paragraph", "attrs": {"textAlign": null}, "content": [{"text": "- Duplicates data.", "type": "text"}, {"type": "hardBreak"}, {"text": "- Query complexity.", "type": "text"}]}]}]}]}]},
-            sharedURL: "tRTQx8FM6It7"
-        }
-    ];
+    onMount(() => {
+        getSpaces();
+    })
+
+    const token = "";
+
+    let spaces = [];
     let isSidebarActive = false;
     let isNewSpaceInputActive = false;
     let editor;
@@ -39,6 +36,13 @@
             editor.commands.setContent(spaces.find(s => s.spaceID == activeSpaceID).content);
         }
     }
+
+    // const handleActiveSpaceClear = () => {
+    //     console.log("Clearing editor");
+    //     if(editor) {
+    //         editor.commands.clearContent();
+    //     }
+    // }
 
     $: if(activeSpaceID) {
         handleActiveSpaceChange();
@@ -62,8 +66,154 @@
     let showTeamMembers = false;
 
     let showDeleteModal = false;
+    
+    const getSpaces = () => {
+        isSaving = true;
+        fetch("https://glint-vision-creative.pages.dev/api/space", {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        })
+        .then(res => res.json())
+        .then(json => {
+            console.log(json);
+            spaces = json.data;
+            isSaving = false;
+        })
+    }
 
-    const deleteSpace = () => {}
+    const createSpace = () => {
+        if(!newSpaceName) {
+            alert("Please choose a name for your new Space");
+            return;
+        }
+        isSaving = true;
+        fetch("https://glint-vision-creative.pages.dev/api/space", {
+            method: "POST",
+            body: JSON.stringify({
+                name: newSpaceName
+            }),
+            headers: {
+                "Content-Type": "applcation/json",
+                "Authorization": `Bearer ${token}`
+            }
+        })
+        .then(res => res.json())
+        .then(json => {
+            isSaving = false;
+            console.log(json);
+            spaces.push({
+                spaceID: json.data.spaceID,
+                name: newSpaceName,
+                created_at: new Date().getTime(),
+                content: ""
+            });
+            spaces = spaces;
+            newSpaceName = "";
+            isNewSpaceInputActive = false;
+            activeSpaceID = json.data.spaceID;
+        })
+    }
+
+    const deleteSpace = () => {
+        isSaving = true;
+        fetch("https://glint-vision-creative.pages.dev/api/space", {
+            method: "DELETE",
+            body: JSON.stringify({ spaceID: activeSpaceID }),
+            headers: {
+                "Content-Type": "applcation/json",
+                "Authorization": `Bearer ${token}`
+            }
+        })
+        .then(res => res.json())
+        .then(json => {
+            isSaving = false;
+            console.log(json);
+            if(!json.status) {
+                return;
+            }
+            
+            spaces = spaces.filter(s => s.spaceID != activeSpaceID);
+            activeSpaceID = null;
+            showDeleteModal = false;
+        })
+    }
+
+    const shareSpace = () => {
+        isSaving = true;
+        fetch("https://glint-vision-creative.pages.dev/api/space/shared", {
+            method: "PATCH",
+            body: JSON.stringify({
+                spaceID: activeSpaceID
+            }),
+            headers: {
+                "Content-Type": "applcation/json",
+                "Authorization": `Bearer ${token}`
+            }
+        })
+        .then(res => res.json())
+        .then(json => {
+            console.log(json);
+            isSaving = false;
+            spaces.find(s => s.spaceID == activeSpaceID).sharedURL = json.data;
+            spaces = spaces;
+        })
+    }
+    
+    const getTeamMembers = async () => {
+        const teamRes = await fetch("https://glint-vision-creative.pages.dev/api/team/members", {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        const teamJSON = await teamRes.json();
+
+        console.log(teamJSON);
+
+        if(!teamJSON.status) {
+            return [];
+        }
+
+        return teamJSON.data;
+    }
+
+    const forwardSpace = userID => {
+        isSaving = true;
+        fetch("https://glint-vision-creative.pages.dev/api/team/forward", {
+            method: "POST",
+            body: JSON.stringify({
+                userID, spaceID: activeSpaceID
+            }),
+            headers: {
+                "Content-Type": "applcation/json",
+                "Authorization": `Bearer ${token}`
+            }
+        })
+        .then(res => res.json())
+        .then(json => {
+            isSaving = false;
+            console.log(json);
+            showTeamMembers = false;
+        })
+    }
+    
+    const updateSpace = () => {
+        isSaving = true;
+        fetch("https://glint-vision-creative.pages.dev/api/space", {
+            method: "PATCH",
+            body: JSON.stringify({
+                content: editor.getJSON(),
+                spaceID: activeSpaceID
+            }),
+            headers: {
+                "Content-Type": "applcation/json",
+                "Authorization": `Bearer ${token}`
+            }
+        })
+        .then(res => res.json())
+        .then(json => {
+            isSaving = false;
+            console.log(json);
+        })
+    }
 </script>
 
 <Saving bind:show={isSaving} text={"Processing..."} />
@@ -122,7 +272,7 @@
     
                         clearTimeout(debounceTimer);
                         debounceTimer = setTimeout(() => {
-                            // updateSpace();
+                            updateSpace();
                         }, 1000);
                     }
                     adjustScrollForCaret();
@@ -131,9 +281,9 @@
         </div> 
         <div class="space-controls fs-xs">
             <p>{formatDate(spaces.find(s => s.spaceID == activeSpaceID).created_at)}</p>
-            <!-- <button on:click={() => showDeleteModal = true}>Delete</button>
+            <button on:click={() => showDeleteModal = true}>Delete</button>
             {#if spaces.find(s => s.spaceID == activeSpaceID).sharedURL}
-                <p>Shared Space URL: <a href="/shared/{spaces.find(s => s.spaceID == activeSpaceID).sharedURL}" target="_blank">{spaces.find(s => s.spaceID == activeSpaceID).sharedURL}</a></p>
+                <p>Shared Space URL: <a href="https://glint-vision-creative.pages.dev/shared/{spaces.find(s => s.spaceID == activeSpaceID).sharedURL}" target="_blank">{spaces.find(s => s.spaceID == activeSpaceID).sharedURL}</a></p>
             {:else}
             <button on:click={shareSpace}>Share</button>
             {/if}
@@ -152,7 +302,7 @@
                 <p>Couldn't load teams, try again later</p>
             {/await}
             <button on:click={() => showTeamMembers = false}>Cancel</button>
-            {/if} -->
+            {/if}
         </div>
         {:else}
         <div class="no-selected-space">
