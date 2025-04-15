@@ -4,8 +4,13 @@ import { SECRET_JWT_KEY } from "$env/static/private";
 import jwt from '@tsndr/cloudflare-worker-jwt';
 import { redirect } from "@sveltejs/kit";
 
-export const GET = async ({ cookies }) => {
-    const token = cookies.get("token");
+export const GET = async ({ cookies, request }) => {
+    let token;
+    token = request.headers.get('Authorization')?.split(' ')[1] || "";
+    if(!token) {
+        token = cookies.get("token");
+    }
+
     if(!token) {
         throw redirect(302, "/login");
     }
@@ -35,7 +40,12 @@ export const GET = async ({ cookies }) => {
 }
 
 export const POST = async ({ cookies, request }) => {
-    const token = cookies.get("token");
+    let token;
+    token = request.headers.get('Authorization')?.split(' ')[1] || "";
+    if(!token) {
+        token = cookies.get("token");
+    }
+    
     if(!token) {
         throw redirect(302, "/login");
     }
@@ -75,7 +85,12 @@ export const POST = async ({ cookies, request }) => {
 }
 
 export const DELETE = async ({ cookies, request }) => {
-    const token = cookies.get("token");
+    let token;
+    token = request.headers.get('Authorization')?.split(' ')[1] || "";
+    if(!token) {
+        token = cookies.get("token");
+    }
+
     if(!token) {
         throw redirect(302, "/login");
     }
@@ -119,4 +134,41 @@ export const DELETE = async ({ cookies, request }) => {
     }
 
     return json({ status: true, data: null });
+}
+
+export const PATCH = async ({ cookies, request }) => {
+    let token;
+    token = request.headers.get('Authorization')?.split(' ')[1] || "";
+    if(!token) {
+        token = cookies.get("token");
+    }
+
+    if(!token) {
+        throw redirect(302, "/login");
+    }
+    
+    const verifiedToken = await jwt.verify(token, SECRET_JWT_KEY);
+    const userData = verifiedToken.payload;
+    const userID = userData.userID;
+
+    if (!userID) {
+        return new Response(JSON.stringify({ error: 'userID is required' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' },
+        });
+    }
+
+    const { spaceID, content } = await request.json();
+    const { error } = await supabase
+    .from('glint_space')
+    .update({ content })
+    .eq('spaceID', spaceID)
+    .eq('userID', userID)
+
+    if(error) {
+        return json({ status: false, message: "Couldn't update this space" });
+    }
+
+    return json({ status: true, data: null });
+    
 }

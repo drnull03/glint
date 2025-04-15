@@ -24,7 +24,12 @@ const generateSharedURL = (length = 12) => {
 }
 
 export const PATCH = async ({ cookies, request }) => {
-    const token = cookies.get("token");
+    let token;
+    token = request.headers.get('Authorization')?.split(' ')[1] || "";
+    if(!token) {
+        token = cookies.get("token");
+    }
+    
     if(!token) {
         throw redirect(302, "/login");
     }

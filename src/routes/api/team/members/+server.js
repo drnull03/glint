@@ -4,8 +4,13 @@ import { SECRET_JWT_KEY } from "$env/static/private";
 import jwt from '@tsndr/cloudflare-worker-jwt';
 import { redirect } from "@sveltejs/kit";
 
-export const GET = async ({ cookies }) => {
-    const token = cookies.get("token");
+export const GET = async ({ cookies, request }) => {
+    let token;
+    token = request.headers.get('Authorization')?.split(' ')[1] || "";
+    if(!token) {
+        token = cookies.get("token");
+    }
+    
     if(!token) {
         throw redirect(302, "/login");
     }

@@ -90,7 +90,7 @@
 
     const updateSpace = () => {
         isSaving = true;
-        fetch("../api/space/update", {
+        fetch("../api/space", {
             method: "PATCH",
             body: JSON.stringify({
                 content: editor.getJSON(),
