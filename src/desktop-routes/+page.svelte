@@ -235,6 +235,9 @@
     <div class="sidebar" class:active={isSidebarActive}>
         <div class="controls">
             <div>
+                <button class:active={isSidebarActive} class="sidebar-toggle" on:click={() => {
+                    isSidebarActive = !isSidebarActive;
+                }}><img src="{toggleSidebarIconSrc}" alt="toggle sidebar"></button>
                 <h3>My Spaces</h3>
                 <button on:click={() => isNewSpaceInputActive = !isNewSpaceInputActive}><img src="{addIconSrc}" alt="add"></button>
             </div>
@@ -450,5 +453,31 @@
 
     .space-controls {
         padding-bottom: 2rem;
+    }
+
+    /* For mobile */
+    .sidebar .sidebar-toggle {
+        display: none;
+    }
+
+    @media (max-width: 500px) {
+        .sidebar {
+            position: fixed;
+            z-index: 3;
+            background-color: black;
+            width: 80vw;
+        }
+
+        .sidebar.active {
+            max-width: 300px;
+        }
+
+        .controls > div {
+            align-items: center;
+        }
+
+        .sidebar .sidebar-toggle {
+            display: block;
+        }
     }
 </style>
