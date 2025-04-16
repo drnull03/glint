@@ -1,17 +1,13 @@
 <script>
     import { goto } from "$app/navigation";
-    import { load } from "@tauri-apps/plugin-store";
+    import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
     import { onMount } from "svelte";
     onMount(async () => {
-        // Manage redirects
-        store = await load('store.json', { autoSave: false })
-        const tokenStore = await store.get('token');
-        const token = tokenStore?.value;
-        if(token) {
+        SecureStoragePlugin.get({ key: "token" })
+        .then(({ value }) => {
             goto("/");
-        }
+        })
     })
-    let store;
     let errorMessage;
     let showLoading = false;
 
@@ -31,8 +27,10 @@
                 return;
             }
 
-            await store.set('token', { value: json.data });
-            goto("/");
+            SecureStoragePlugin.set({ key: "token", value: json.data })
+            .then(() => {
+                goto("/");
+            })
         })
     }
 

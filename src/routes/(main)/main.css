@@ -100,6 +100,11 @@ select {
     font-weight: 800;
 }
 
+/* Hiding the blue highlight box on touch screens */
+html {
+    -webkit-tap-highlight-color: transparent;
+}
+
 
 /* ------------------- */
 /* Scrollbars          */

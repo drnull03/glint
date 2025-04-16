@@ -7,6 +7,7 @@
     import Modal from "$lib/components/Modal.svelte";
     import { onMount } from "svelte";
     import { goto } from "$app/navigation";
+    import { page } from "$app/stores";
     let isSaving = false;
     const formatDate = (ms) => {
         const date = new Date(ms);
@@ -14,17 +15,31 @@
         return date.toLocaleDateString('en-US', options);
     }
 
-    import { load } from "@tauri-apps/plugin-store";
+    import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
+    import { App } from "@capacitor/app";
 
     onMount(async () => {
-        const store = await load('store.json', { autoSave: false })
-        const tokenStore = await store.get('token');
-        token = tokenStore?.value;
-        if(!token) {
+        SecureStoragePlugin.get({ key: "token" })
+        .then(({ value }) => {
+            token = value;
+            App.addListener("backButton", () => {
+                if(isSidebarActive) {
+                    isSidebarActive = false
+                }
+
+                else if($page.url.pathname == "/") {
+                    App.minimizeApp();
+                }
+            })
+            getSpaces();
+        })
+        .catch(() => {
             goto("/login");
+        })
+
+        return () => {
+            App.removeAllListeners();
         }
-        // await store.delete('token');
-        getSpaces();
     })
 
     let loadingUserData = true;
@@ -251,7 +266,10 @@
         </div>
         <div class="spaces">
             {#each spaces as space}
-            <button on:click={() => activeSpaceID = space.spaceID} class="space fs-xs">
+            <button on:click={() => {
+                activeSpaceID = space.spaceID;
+                isSidebarActive = false;
+            }} class="space fs-xs">
                 <p class="bold">{space.name}</p>
                 {#if space.forwarded}
                     <p>Forwarded by {space.forwarded}</p>
@@ -392,6 +410,10 @@
         /* border: 1px solid red; */
     }
 
+    .content > div:not(.top) {
+        padding-inline: 1rem;
+    }
+
     .sidebar {
         position: sticky;
         top: 0;
@@ -465,7 +487,7 @@
             position: fixed;
             z-index: 3;
             background-color: black;
-            width: 80vw;
+            width: 70vw;
         }
 
         .sidebar.active {
