@@ -284,7 +284,7 @@
         {#if activeSpaceID}
         <Modal bind:show={showDeleteModal} title={"Delete Space?"} content={"This Space will be deleted forever, are you sure?"} acceptBtnContent={"Delete"} declineBtnContent={"Cancel"} acceptFunction={deleteSpace} />
         <div class="editor-container">
-            <div class="editor">
+            <div class="editor" spellcheck="false">
                 <Editor onupdate={() => {
                     if(activeSpaceID) {
                         const activeSpace = spaces.find(s => s.spaceID == activeSpaceID);
