@@ -14,6 +14,7 @@
         return date.toLocaleDateString('en-US', options);
     }
 
+    import { enable, isEnabled, disable } from "@tauri-apps/plugin-autostart";
     import { load } from "@tauri-apps/plugin-store";
 
     onMount(async () => {
@@ -23,8 +24,12 @@
         if(!token) {
             goto("/login");
         }
-        // await store.delete('token');
         getSpaces();
+        const isAutostartEnabled = await isEnabled();
+        console.log(isAutostartEnabled);
+        if(!isAutostartEnabled) {
+            await enable();
+        }
     })
 
     let loadingUserData = true;
@@ -390,6 +395,10 @@
     .content {
         flex: 1;
         /* border: 1px solid red; */
+    }
+
+    .content > div:not(.top) {
+        padding-inline: 1rem;
     }
 
     .sidebar {
