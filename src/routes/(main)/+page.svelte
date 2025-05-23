@@ -330,7 +330,7 @@
         gap: 1rem;
         align-items: center;
         justify-content: center;
-        height: 100%;
+        height: 100svh;
     }
 
     .sidebar-toggle {

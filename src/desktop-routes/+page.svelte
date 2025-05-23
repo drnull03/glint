@@ -377,6 +377,10 @@
         height: 100%;
     }
 
+    .no-selected-space{
+        height: 100svh;
+    }
+
     .sidebar-toggle {
         border: 0;
         padding: .2rem;
