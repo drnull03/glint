@@ -47,9 +47,7 @@
     let activeSpaceID;
 
     const handleActiveSpaceChange = () => {
-        console.log("Outer");
         if(editor) {
-            console.log("Inner");
             editor.commands.setContent(spaces.find(s => s.spaceID == activeSpaceID).content);
         }
     }
@@ -256,7 +254,13 @@
         </div>
         <div class="spaces">
             {#each spaces as space}
-            <button on:click={() => activeSpaceID = space.spaceID} class="space fs-xs">
+            <button on:click={() => {
+                if(activeSpaceID == space.spaceID) {
+                    activeSpaceID = null;
+                    return;
+                }
+                activeSpaceID = space.spaceID;
+            }} class="space fs-xs">
                 <p class="bold">{space.name}</p>
                 {#if space.forwarded}
                     <p>Forwarded by {space.forwarded}</p>
@@ -450,6 +454,11 @@
         display: flex;
         flex-direction: column;
         gap: .5rem;
+    }
+
+    .spaces button {
+        border: none;
+        text-align: start;
     }
 
     .editor-container {
