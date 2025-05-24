@@ -270,7 +270,7 @@
     }
 </script>
 
-<SparkModal bind:show={showSparkModal} bind:spaces baseURL={"https://glint-vision-creative.pages.dev"} token />
+<SparkModal bind:show={showSparkModal} bind:spaces baseURL={"https://glint-vision-creative.pages.dev"} token={token} />
 
 <Saving bind:show={isSaving} text={"Processing..."} />
 
