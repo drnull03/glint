@@ -252,7 +252,10 @@
         isSaving = true;
         fetch("https://glint-vision-creative.pages.dev/api/space/suggestion/delete", {
             method: "PATCH",
-            headers: {"Content-Type": "application/json"},
+            headers: {
+                "Content-Type": "applcation/json",
+                "Authorization": `Bearer ${token}`
+            },
             body: JSON.stringify({ spaceID })
         })
         .then(res => res.json())
@@ -267,7 +270,7 @@
     }
 </script>
 
-<SparkModal bind:show={showSparkModal} bind:spaces baseURL={"https://glint-vision-creative.pages.dev"} />
+<SparkModal bind:show={showSparkModal} bind:spaces baseURL={"https://glint-vision-creative.pages.dev"} token />
 
 <Saving bind:show={isSaving} text={"Processing..."} />
 

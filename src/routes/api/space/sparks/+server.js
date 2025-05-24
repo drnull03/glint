@@ -9,6 +9,7 @@ import { SECRET_DEEPSEEK_API_KEY } from "$env/static/private";
 const client = new OpenAI({ baseURL: "https://api.deepseek.com/v1", apiKey: SECRET_DEEPSEEK_API_KEY });
 
 export const PATCH = async ({ cookies, request }) => {
+    console.log("endpoint triggered");
     let token;
     token = request.headers.get('Authorization')?.split(' ')[1] || "";
     if(!token) {
@@ -18,6 +19,8 @@ export const PATCH = async ({ cookies, request }) => {
     if(!token) {
         throw redirect(302, "/login");
     }
+
+    console.log("token: ", token);
     
     const verifiedToken = await jwt.verify(token, SECRET_JWT_KEY);
     const userData = verifiedToken.payload;

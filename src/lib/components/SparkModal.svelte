@@ -5,16 +5,13 @@
 
     export let show = false;
     export let spaces = [];
-    export let mentionList = spaces.map(space => {
-        return { spaceID: space.spaceID, name: space.name }
-    });
-    export let baseURL = null;
+    export let baseURL = null, token = null;
     let editor;
 
     const addSpark = (spaceID, spark) => {
         fetch(`${baseURL || ".."}/api/space/sparks`, {
             method: "PATCH",
-            headers: {"Content-Type": "application/json"},
+            headers: baseURL ? {"Content-Type": "application/json", "Authorization": `Bearer ${token}`} : {"Content-Type": "application/json"},
             body: JSON.stringify({
                 spaceID,
                 sparks: [spark]
@@ -49,7 +46,7 @@
         }
         fetch(`${baseURL || ".."}/api/space/sparks`, {
             method: "PATCH",
-            headers: {"Content-Type": "application/json"},
+            headers: baseURL ? {"Content-Type": "application/json", "Authorization": `Bearer ${token}`} : {"Content-Type": "application/json"},
             body: JSON.stringify({
                 spaceID,
                 sparks,
@@ -108,7 +105,11 @@
 }} transition:fade={{ duration: 50 }}>
     <div transition:fly={{ y: 100 }} class="main">
         <h3>Sparks ✨</h3>
-        <Editor bind:editor bind:mentionList />
+        {#key spaces}
+        <Editor bind:editor mentionList={spaces.map(space => {
+            return { spaceID: space.spaceID, name: space.name }
+        })} />
+        {/key}
         <button on:click={() => {
             const sparks = getAllMentions(editor);
             sparks.forEach(s => {
