@@ -165,6 +165,10 @@ pre::-webkit-scrollbar-track {
     content: "اكتب هنا ..."
 }
 
+.spark .tipex-editor-section .ProseMirror .is-empty::before {
+    content: "Capture a Spark here ..."
+}
+
 /* This makes sure that if you use right align at least once, it changes the direction of the whole editor to the right */
 .tiptap:has(p[style*="text-align: right"]) {
     direction: rtl;

@@ -1,10 +1,12 @@
 <script>
     import toggleSidebarIconSrc from "$lib/assets/icons/toggle-sidebar-icon.svg";
     import addIconSrc from "$lib/assets/icons/add-icon.svg";
+    import sparkIconSrc from "$lib/assets/icons/spark.svg";
     import Saving from '$lib/components/Saving.svelte';
     import { fly } from "svelte/transition";
     import Editor from "$lib/components/Editor.svelte";
     import Modal from "$lib/components/Modal.svelte";
+    import SparkModal from "$lib/components/SparkModal.svelte";
     import { onMount } from "svelte";
     import { goto } from "$app/navigation";
     let isSaving = false;
@@ -230,7 +232,42 @@
             console.log(json);
         })
     }
+
+    let showSparkModal = false;
+
+    const mergeSuggestion = (suggestion) => {
+        editor.commands.focus('end');
+        editor.commands.insertContent(suggestion);
+        updateSpace();
+        declineSuggestion(activeSpaceID);
+        deleteSuggestionLocally(activeSpaceID)
+    }
+
+    const deleteSuggestionLocally = spaceID => {
+        spaces.find(s => s.spaceID == spaceID).suggestion = null;
+        spaces = spaces;
+    }
+
+    const declineSuggestion = spaceID => {
+        isSaving = true;
+        fetch("https://glint-vision-creative.pages.dev/api/space/suggestion/delete", {
+            method: "PATCH",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ spaceID })
+        })
+        .then(res => res.json())
+        .then(json => {
+            isSaving = false;
+            if(!json?.status) {
+                return;
+            }
+
+            deleteSuggestionLocally(spaceID);
+        })
+    }
 </script>
+
+<SparkModal bind:show={showSparkModal} bind:spaces baseURL={"https://glint-vision-creative.pages.dev"} />
 
 <Saving bind:show={isSaving} text={"Processing..."} />
 
@@ -301,8 +338,24 @@
                         }, 1000);
                     }
                     adjustScrollForCaret();
-                }} initContent={spaces.find(s => s.spaceID == activeSpaceID).content || ""} bind:editor mentionList={spaces.map(space => space.name)} />
+                }} initContent={spaces.find(s => s.spaceID == activeSpaceID).content || ""} bind:editor mentionList={spaces.map(space => {
+                    return { spaceID: space.spaceID, name: space.name }
+                })} />
             </div>
+            {#if spaces.find(s => s.spaceID == activeSpaceID)?.suggestion}
+            <div class="spark-suggestion">
+                <div class="suggestion-controls">
+                    <p>Suggested merge from your Sparks</p>
+                    <button on:click={() => mergeSuggestion(spaces.find(s => s.spaceID == activeSpaceID).suggestion)}>Merge</button>
+                    <button on:click={() => declineSuggestion(activeSpaceID)}>Decline</button>
+                </div>
+                {#key spaces.find(s => s.spaceID == activeSpaceID).suggestion}
+                <div class="suggestion-content">
+                    <Editor initContent={spaces.find(s => s.spaceID == activeSpaceID).suggestion} readOnly />
+                </div>
+                {/key}
+            </div>
+            {/if}
         </div> 
         <div class="space-controls fs-xs">
             <p>{formatDate(spaces.find(s => s.spaceID == activeSpaceID).created_at)}</p>
@@ -342,6 +395,10 @@
         </div>
         {/if}
     </div>
+
+    <button class="spark-btn" on:click={() => showSparkModal = true}>
+        <img src="{sparkIconSrc}" alt="spark">
+    </button>
 </main>
 
 <style>
@@ -468,13 +525,35 @@
     }
 
     .editor,
-    .space-controls {
+    .space-controls,
+    .spark-suggestion {
         max-width: 700px;
         margin-inline: auto;
     }
 
     .space-controls {
         padding-bottom: 2rem;
+    }
+
+    .spark-btn {
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+    }
+
+    .spark-suggestion {
+        border-top: 1px solid #a1a1a166;
+    }
+
+    .suggestion-controls {
+        display: flex;
+        gap: .5rem;
+        align-items: center;
+        padding-block: 1rem;
+    }
+
+    .suggestion-content {
+        opacity: .6;
     }
 
     /* For mobile */
