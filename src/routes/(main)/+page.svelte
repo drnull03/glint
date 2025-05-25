@@ -231,9 +231,11 @@
     // Disabling Sparks for Diaa
     let disableSparks = false;
     onMount(() => {
+        disableSparks = JSON.stringify(localStorage.getItem('disableSparks')) || false;
         document.addEventListener('keydown', e => {
             if(e.ctrlKey && e.altKey && e.shiftKey && e.key === 'D') {
                 disableSparks = !disableSparks;
+                localStorage.setItem('disableSparks', JSON.stringify(disableSparks));
             }
         })
     })
