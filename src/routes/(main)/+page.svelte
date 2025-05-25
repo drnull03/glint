@@ -232,10 +232,13 @@
     let disableSparks = false;
     onMount(() => {
         disableSparks = JSON.parse(localStorage.getItem('disableSparks')) || false;
+        console.log("Init", disableSparks);
         document.addEventListener('keydown', e => {
+            console.log("Triggered");
             if(e.ctrlKey && e.altKey && e.shiftKey && e.key === 'D') {
                 disableSparks = !disableSparks;
                 localStorage.setItem('disableSparks', JSON.stringify(disableSparks));
+                console.log(disableSparks);
             }
         })
     })
