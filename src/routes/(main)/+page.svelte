@@ -7,6 +7,7 @@
     import Editor from "$lib/components/Editor.svelte";
     import Modal from "$lib/components/Modal.svelte";
     import SparkModal from "$lib/components/SparkModal.svelte";
+    import { onMount } from "svelte";
 
     export let data;
 
@@ -226,6 +227,12 @@
             deleteSuggestionLocally(spaceID);
         })
     }
+
+    // Disabling Sparks for Diaa
+    let disableSparks = false;
+    onMount(() => {
+        disableSparks = localStorage.getItem('disableSparks');
+    })
 </script>
 
 <svelte:head>
@@ -353,9 +360,11 @@
         {/if}
     </div>
 
+    {#if !disableSparks}
     <button class="spark-btn" on:click={() => showSparkModal = true}>
         <img src="{sparkIconSrc}" alt="spark">
     </button>
+    {/if}
 </main>
 
 <style>
