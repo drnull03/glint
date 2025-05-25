@@ -231,7 +231,8 @@
     // Disabling Sparks for Diaa
     let disableSparks = false;
     onMount(() => {
-        disableSparks = localStorage.getItem('disableSparks');
+        disableSparks = JSON.parse(localStorage.getItem('disableSparks'));
+        console.log(disableSparks);
     })
 </script>
 
