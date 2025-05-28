@@ -19,6 +19,7 @@
     export let mentionList = [];
     export let initContent;
     export let readOnly = false;
+    export let popupBottom = false;
     export let onupdate = () => {};
 
     onMount(() => {
@@ -93,7 +94,8 @@
                         appendTo: () => document.body,
                         content: component,
                         showOnCreate: true,
-                        interactive: true
+                        interactive: true,
+                        placement: popupBottom ? 'bottom-start' : 'top'
                     });
                     window.addEventListener("keydown", handleGlobalKeydown);
                 },

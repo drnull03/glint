@@ -11,6 +11,8 @@
 		"build:mobile:sync": "cross-env TARGET=mobile vite build && npx cap sync android",
 		"dev:desktop": "cross-env TARGET=desktop vite dev",
 		"build:desktop": "cross-env TARGET=desktop vite build",
+		"build:extension":"cross-env TARGET=extension vite build",
+		"dev:extension":"cross-env TARGET=extension vite dev",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''"
 	},
@@ -23,6 +25,7 @@
 		"@tauri-apps/cli": "^2.4.1",
 		"cross-env": "^7.0.3",
 		"svelte": "^5.0.0",
+		"sveltekit-adapter-chrome-extension": "^2.0.1",
 		"vite": "^6.0.0"
 	},
 	"dependencies": {

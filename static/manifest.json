@@ -1,0 +1,15 @@
+{
+  "name": "Glint - Sparks",
+  "description": "A browser extension for Glint",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "action": {
+    "default_title": "Glint - Sparks",
+    "default_icon": "favicon.png",
+    "default_popup": "index.html"
+  }
+}

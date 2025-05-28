@@ -1,31 +1,49 @@
 import adapterStatic from '@sveltejs/adapter-static';
 import adapterAuto from '@sveltejs/adapter-auto';
+import adapterExtension from 'sveltekit-adapter-chrome-extension';
 
-const isMobile = process.env.TARGET === 'mobile';
-const isDesktop = process.env.TARGET === 'desktop';
+const target = process.env.TARGET;
 
 let routes;
-if(isMobile) {
+let adapter;
+
+if (target === 'mobile') {
   routes = 'src/mobile-routes';
-} else if(isDesktop) {
-  routes = 'src/desktop-routes'
+  adapter = adapterStatic({
+    pages: 'build-mobile',
+    assets: 'build-mobile',
+    fallback: null,
+    strict: false
+  });
+} else if (target === 'desktop') {
+  routes = 'src/desktop-routes';
+  adapter = adapterStatic({
+    pages: 'build-desktop',
+    assets: 'build-desktop',
+    fallback: null,
+    strict: false
+  });
+} else if (target === 'extension') {
+  routes = 'src/extension-routes';
+  adapter = adapterExtension({
+    pages: 'build-extension',
+    assets: 'build-extension',
+    fallback: null,
+    precompress: false,
+    manifest: 'manifest.json'
+  });
 } else {
-  routes = 'src/routes'
+  routes = 'src/routes';
+  adapter = adapterAuto();
 }
 
 const config = {
   kit: {
-    adapter: (isMobile || isDesktop)
-      ? adapterStatic({
-          pages: isDesktop ? 'build-desktop' : 'build-mobile',
-          assets: isDesktop ? 'build-desktop' : 'build-mobile',
-          fallback: null,
-          strict: false
-        })
-      : adapterAuto(),
+    adapter,
     files: {
       routes
-    }
+    },
+    appDir: 'app'
   }
 };
 
