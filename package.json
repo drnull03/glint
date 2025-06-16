@@ -1,7 +1,8 @@
 {
-	"name": "ai-notes",
+	"name": "glint",
+	"description": "A blazing-fast, lightweight, and cross-platform minimal text editor built with svelte. Designed for simplicity and performance."
 	"private": true,
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
